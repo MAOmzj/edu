@@ -1,0 +1,2 @@
+system_prompt_path: prompts/education_system.txt
+rag_answer_prompt_path: prompts/education_rag_answer.txt

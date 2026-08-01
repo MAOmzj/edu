@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="面向小学一至六年级的语文、数学、英语、科学和安全知识问答助手"
+    />
+    <title>小学知识小助手</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="小学知识小助手首页">
+          <span class="brand-mark" aria-hidden="true">学</span>
+          <span>
+            <strong>小学知识小助手</strong>
+            <small>把好奇心变成新知识</small>
+          </span>
+        </a>
+        <div class="service-status" id="serviceStatus" role="status">
+          <span class="status-dot"></span>
+          <span>正在连接</span>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="learning-panel" aria-label="学习设置">
+          <section>
+            <p class="eyebrow">今天想学什么？</p>
+            <h1>选好年级和学科，<br />大胆提问吧。</h1>
+            <p class="intro">
+              我会先给出答案，再用简单的步骤和例子帮你真正弄懂。
+            </p>
+          </section>
+
+          <section class="control-group">
+            <label for="gradeSelect">我的年级</label>
+            <div class="select-wrap">
+              <select id="gradeSelect">
+                <option value="">未指定年级</option>
+                <option value="1">小学一年级</option>
+                <option value="2">小学二年级</option>
+                <option value="3">小学三年级</option>
+                <option value="4">小学四年级</option>
+                <option value="5">小学五年级</option>
+                <option value="6">小学六年级</option>
+              </select>
+            </div>
+          </section>
+
+          <section class="control-group">
+            <span class="group-label">选择学科</span>
+            <div class="subject-grid" id="subjectGrid">
+              <button class="subject-button active" data-subject="综合" type="button">
+                <span aria-hidden="true">✦</span>综合
+              </button>
+              <button class="subject-button" data-subject="语文" type="button">
+                <span aria-hidden="true">文</span>语文
+              </button>
+              <button class="subject-button" data-subject="数学" type="button">
+                <span aria-hidden="true">＋</span>数学
+              </button>
+              <button class="subject-button" data-subject="英语" type="button">
+                <span aria-hidden="true">A</span>英语
+              </button>
+              <button class="subject-button" data-subject="科学" type="button">
+                <span aria-hidden="true">⌁</span>科学
+              </button>
+              <button class="subject-button wide" data-subject="安全与品德" type="button">
+                <span aria-hidden="true">✓</span>安全与品德
+              </button>
+            </div>
+          </section>
+
+          <div class="tip-card">
+            <span class="tip-icon" aria-hidden="true">💡</span>
+            <p><strong>提问小窍门</strong>说清楚题目条件，我就能回答得更准确。</p>
+          </div>
+
+          <div class="memory-card">
+            <div>
+              <strong>学习记忆已开启</strong>
+              <p>会话和学习偏好只关联本浏览器生成的匿名 ID。</p>
+            </div>
+            <button id="forgetButton" type="button">清除我的记忆</button>
+          </div>
+        </aside>
+
+        <section class="chat-card" aria-label="知识问答对话">
+          <div class="chat-header">
+            <div>
+              <p class="eyebrow">学习对话</p>
+              <h2 id="chatTitle">综合知识问答</h2>
+            </div>
+            <button id="clearButton" class="clear-button" type="button">
+              新对话
+            </button>
+          </div>
+
+          <div
+            class="messages"
+            id="messages"
+            role="log"
+            aria-live="polite"
+            aria-label="对话记录"
+          >
+            <div class="welcome" id="welcome">
+              <div class="welcome-orbit" aria-hidden="true">
+                <span>?</span>
+              </div>
+              <h3>嗨，今天想弄懂什么？</h3>
+              <p>可以问一道题、一个词语，或者一个让你好奇的科学现象。</p>
+              <div class="example-list">
+                <button type="button" data-example="为什么月亮会有圆缺变化？" data-subject="科学">
+                  为什么月亮会有圆缺变化？
+                </button>
+                <button type="button" data-example="三角形的内角和是多少？" data-subject="数学">
+                  三角形的内角和是多少？
+                </button>
+                <button type="button" data-example="怎么区分“的、地、得”？" data-subject="语文">
+                  怎么区分“的、地、得”？
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <form class="composer" id="askForm">
+            <label class="sr-only" for="questionInput">输入你的问题</label>
+            <textarea
+              id="questionInput"
+              rows="1"
+              maxlength="500"
+              placeholder="在这里输入你的问题……"
+              required
+            ></textarea>
+            <div class="composer-footer">
+              <span><kbd>Enter</kbd> 发送 · <kbd>Shift</kbd> + <kbd>Enter</kbd> 换行</span>
+              <button id="sendButton" type="submit">
+                <span>发送问题</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          </form>
+          <p class="safety-note">
+            回答用于辅助学习；遇到危险或身体不适，请马上告诉家长或老师。
+          </p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

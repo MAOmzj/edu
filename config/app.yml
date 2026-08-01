@@ -1,0 +1,16 @@
+name: 小学知识小助手
+supported_subjects:
+  - 语文
+  - 数学
+  - 英语
+  - 科学
+  - 安全与品德
+  - 综合
+
+agent:
+  recursion_limit: 12
+
+memory:
+  database_path: storage/education_memory.sqlite3
+  max_long_term_memories: 120
+  retrieval_limit: 5

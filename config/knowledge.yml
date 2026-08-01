@@ -1,0 +1,10 @@
+collection_name: primary_education
+persist_directory: storage/chroma
+data_path: data/knowledge
+manifest_path: storage/index_manifest.json
+allowed_file_types: [txt, pdf]
+k: 4
+
+chunk_size: 500
+chunk_overlap: 60
+separators: ["\n\n", "\n", "。", "！", "？", ".", "!", "?", "；", ";", "，", ",", " ", ""]
