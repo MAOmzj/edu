@@ -13,6 +13,7 @@ from memory.store import EducationMemoryStore
 
 class EducationMemoryStoreTests(unittest.TestCase):
     def test_history_long_term_retrieval_and_deletion(self):
+        """验证会话记录、脱敏、长期记忆检索和学生数据删除流程。"""
         with tempfile.TemporaryDirectory() as directory:
             database_path = Path(directory) / "memory.sqlite3"
             store = EducationMemoryStore(database_path)
@@ -78,7 +79,9 @@ class EducationMemoryStoreTests(unittest.TestCase):
 class SqliteCheckpointerTests(unittest.TestCase):
     @staticmethod
     def _build_graph(checkpointer):
+        """构建一个最小消息图，用于验证指定 Checkpointer 的持久化行为。"""
         def reply(state: MessagesState):
+            """根据当前 State 中的消息数量生成一条测试回复。"""
             return {"messages": [AIMessage(content=f"消息数：{len(state['messages'])}")]}
 
         builder = StateGraph(MessagesState)
@@ -87,6 +90,7 @@ class SqliteCheckpointerTests(unittest.TestCase):
         return builder.compile(checkpointer=checkpointer)
 
     def test_state_survives_new_connection(self):
+        """验证关闭并重新连接 SQLite 后仍能恢复线程 State。"""
         with tempfile.TemporaryDirectory() as directory:
             database_path = Path(directory) / "checkpoints.sqlite3"
             config = {"configurable": {"thread_id": "student:thread-001"}}

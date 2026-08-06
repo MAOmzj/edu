@@ -90,13 +90,49 @@
           </div>
         </aside>
 
+        <aside class="conversation-panel" aria-label="学习会话">
+          <div class="conversation-panel-header">
+            <div>
+              <p class="eyebrow">对话记录</p>
+              <h2>学习会话</h2>
+            </div>
+            <button
+              id="newConversationButton"
+              class="new-conversation-button"
+              type="button"
+            >
+              <span aria-hidden="true">＋</span>
+              新建
+            </button>
+          </div>
+
+          <p class="conversation-hint">
+            每个窗口拥有独立的短期上下文，点击即可继续上次的问题。
+          </p>
+          <div
+            id="conversationStatus"
+            class="conversation-status"
+            role="status"
+            aria-live="polite"
+          >
+            正在读取会话……
+          </div>
+          <div
+            id="conversationList"
+            class="conversation-list"
+            role="list"
+            aria-label="历史会话列表"
+          ></div>
+        </aside>
+
         <section class="chat-card" aria-label="知识问答对话">
           <div class="chat-header">
             <div>
-              <p class="eyebrow">学习对话</p>
-              <h2 id="chatTitle">综合知识问答</h2>
+              <p class="eyebrow" id="chatMeta">综合 · 未指定年级</p>
+              <h2 id="chatTitle">新对话</h2>
             </div>
             <button id="clearButton" class="clear-button" type="button">
+              <span aria-hidden="true">＋</span>
               新对话
             </button>
           </div>

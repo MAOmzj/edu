@@ -7,6 +7,7 @@ from utils.path_tool import get_abs_path
 
 
 def _load_prompt(config_key: str) -> str:
+    """根据配置字段读取对应提示词文件并返回去除首尾空白的内容。"""
     try:
         prompt_path = Path(get_abs_path(prompts_conf[config_key]))
     except KeyError as exc:
@@ -18,8 +19,10 @@ def _load_prompt(config_key: str) -> str:
 
 
 def load_system_prompt() -> str:
+    """读取教育 Agent 使用的系统提示词。"""
     return _load_prompt("system_prompt_path")
 
 
 def load_rag_answer_prompt() -> str:
+    """读取直接 RAG 问答链使用的回答提示词模板。"""
     return _load_prompt("rag_answer_prompt_path")

@@ -5,12 +5,14 @@ from utils.math_tool import safe_calculate
 
 class SafeCalculateTests(unittest.TestCase):
     def test_basic_operations(self):
+        """验证计算器能够处理括号、四则运算、乘方和取余。"""
         self.assertEqual(safe_calculate("(25 + 15) * 3"), "120")
         self.assertEqual(safe_calculate("7 ÷ 2"), "3.5")
         self.assertEqual(safe_calculate("2^3 + 1"), "9")
         self.assertEqual(safe_calculate("10 % 3"), "1")
 
     def test_friendly_errors(self):
+        """验证空算式、除零、危险代码和超限指数会被友好拒绝。"""
         for expression in ("", "1 / 0", "__import__('os')", "2 ** 9"):
             with self.subTest(expression=expression):
                 with self.assertRaises(ValueError):

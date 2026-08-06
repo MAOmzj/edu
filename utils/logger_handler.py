@@ -13,6 +13,7 @@ LOG_FORMAT = logging.Formatter(
 
 
 def get_logger(name: str = "education_qa") -> logging.Logger:
+    """创建或复用同时输出到终端和滚动日志文件的应用日志器。"""
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     logger.propagate = False

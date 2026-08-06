@@ -1,4 +1,10 @@
-"""小学教育知识问答系统命令行入口。"""
+"""小学教育知识问答系统命令行入口。
+
+这个文件和 app.py 是两个不同入口：app.py 给网页使用，main.py 给终端使用。
+两者最终都会调用同一个 EducationAgent，因此回答、记忆和审核逻辑不会出现两套。
+
+main() 的四个分支按优先级依次是：查看索引、同步/重建索引、单次提问、连续提问。
+"""
 
 from __future__ import annotations
 
@@ -13,6 +19,7 @@ from utils.config_handler import app_conf
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """创建命令行参数解析器，并注册问答和知识库管理选项。"""
     parser = argparse.ArgumentParser(
         description="面向小学一至六年级的教育知识问答系统"
     )
@@ -60,6 +67,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _print_json(value: object) -> None:
+    """以保留中文且便于阅读的格式向终端输出 JSON 数据。"""
     print(json.dumps(value, ensure_ascii=False, indent=2))
 
 
@@ -70,6 +78,7 @@ def interactive(
     student_id: str,
     thread_id: str,
 ) -> None:
+    """启动连续提问的命令行交互循环，直至用户主动退出。"""
     print("小学知识小助手已启动。输入问题开始学习，输入 exit 退出。")
     print(f"匿名学生 ID：{student_id}")
     print(f"当前会话 ID：{thread_id}")
@@ -100,13 +109,16 @@ def interactive(
 
 
 def main() -> int:
+    """根据命令行参数执行单次问答、交互问答或知识库管理任务。"""
     args = build_parser().parse_args()
 
     try:
+        # 状态查询只读取清单文件，不创建在线模型，所以没有 API Key 也能执行。
         if args.status:
             _print_json(EducationVectorStore().status())
             return 0
 
+        # 索引管理只需要 Embedding；它不会创建 DeepSeek 聊天模型。
         if args.sync_index or args.rebuild_index:
             vector_store = EducationVectorStore()
             report = (
@@ -117,8 +129,11 @@ def main() -> int:
             _print_json(asdict(report))
             return 0
 
+        # student_id 标识“哪个学生”，thread_id 标识“这个学生的哪段会话”。
+        # 不主动传入时生成临时编号；想继续旧会话就重复使用同一组编号。
         student_id = args.student_id or f"cli-student-{uuid4().hex}"
         thread_id = args.thread_id or f"cli-thread-{uuid4().hex}"
+        # with 代码块结束时会自动关闭 SQLite，即使中途发生异常也不会遗漏清理。
         with EducationRuntime() as runtime:
             if args.question:
                 print(
@@ -146,6 +161,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-
-#python -m uvicorn app:app --host 127.0.0.1 --port 8766

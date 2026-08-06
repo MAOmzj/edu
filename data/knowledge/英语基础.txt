@@ -1,87 +1,363 @@
-小学英语基础知识
+小学英语基础知识百科
 
-本资料面向小学英语入门到六年级，包含字母、词汇、基础句型、时态和日常交流。
+本资料面向小学英语入门到六年级，系统整理字母、语音、词汇、名词、代词、动词、时态、句型、日常交际、阅读理解、写作等英语基础语法与技能。英语学习口诀：听、说、读、写、用，语感培养最重要。小学阶段把语音、词法和句法基础打牢，初中英语就能轻松衔接。
 
-一、字母和书写
+============================================================
+第一篇：字母与语音
+============================================================
 
-英语字母表有 26 个字母。书写时要区分大写和小写，例如 A— a、B—b。句子的第一个单词首字母要大写；人名、城市名、国家名、星期和月份等专有名称首字母通常也要大写。
+一、字母
 
-五个常见元音字母是 a、e、i、o、u。元音字母在不同单词中可能有不同发音，学习时要结合整个单词和音标或老师示范，不能只记一种发音。
+【26个英文字母】
+大写：A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+小写：a b c d e f g h i j k l m n o p q r s t u v w x y z
+五个元音字母：a e i o u（其他21个是辅音字母）。字母Y既可以是元音也可以是辅音（yellow中y是辅音，sky中y发元音/ai/）。
+字母书写：大写字母占上面两格，小写字母注意占格（b、d、f、h、k、l占上中两格；g、j、p、q、y占中下两格；a、c、e、m、n、o、r、s、u、v、w、x、z占中间一格）。
+注意易混字母：b和d（左右手方向相反）、p和q、g和q、m和n、v和w。记忆b、d：字母b的脸朝右（像大肚子的b），字母d的脸朝左。拼音和英文字母读音要区分（英语字母发音和汉语拼音不同）。
 
-二、人称代词和物主代词
+【大小写规则】
+句子的第一个单词首字母大写：I am a student.（我是一个学生。）
+人名首字母大写：Li Ming、Amy。地名首字母大写：Beijing、China。星期、月份首字母大写：Monday、January。节日首字母大写：Children's Day。专有名词大写：the Great Wall（长城）。
+人称代词I永远大写（无论在句子哪里）。书名、标题实词首字母大写。
 
-I 表示“我”，you 表示“你、你们”，he 表示“他”，she 表示“她”，it 表示“它”，we 表示“我们”，they 表示“他们、她们、它们”。I 无论在句子什么位置都要大写。
+二、语音基础
 
-形容词性物主代词放在名词前：my book 我的书，your bag 你的书包，his pencil 他的铅笔，her ruler 她的尺子，our classroom 我们的教室，their teacher 他们的老师。
+【音素与音标】
+英语单词由音素构成，用音标（/…/）标音。小学阶段不要求掌握国际音标，但了解常见字母和字母组合的发音规律（自然拼读）对记忆单词非常重要。
 
-三、be 动词
+【元音字母的发音】
+开音节（以元音字母结尾或元音+辅音+不发音的e）：元音字母发字母本音。a→/eɪ/（cake蛋糕），e→/iː/（he他），i→/aɪ/（bike自行车），o→/əʊ/（nose鼻子），u→/juː/（cute可爱的）。
+闭音节（以辅音结尾）：元音字母发短音。a→/æ/（cat猫），e→/e/（pen钢笔），i→/ɪ/（pig猪），o→/ɒ/（dog狗），u→/ʌ/（bus公交车）。
 
-一般现在时中，I 和 am 搭配：I am a student. You、we、they 和 are 搭配：They are happy. He、she、it 和 is 搭配：She is my friend.
+【常见字母组合发音】
+ea：/iː/（tea茶、read读），也发/e/（bread面包、head头）。ee：/iː/（see看见、tree树）。oo：/uː/（zoo动物园、school学校），也发/ʊ/（book书、look看）。ou：/aʊ/（house房子、mouse老鼠）。ow：/aʊ/（how怎样、cow奶牛），也发/əʊ/（snow雪、slow慢）。ai/ay：/eɪ/（rain雨、play玩）。oa：/əʊ/（boat船、coat外套）。igh：/aɪ/（light灯、night夜晚）。ar：/ɑː/（car汽车、star星星）。or：/ɔː/（for为了、horse马）。er：/ə/（teacher老师、water水）。ir：/ɜː/（bird鸟、shirt衬衫）。sh：/ʃ/（she她、fish鱼）。ch：/tʃ/（chair椅子、chicken鸡）。th：/θ/（three三）或/ð/（this这）。ck：/k/（duck鸭子）。ph：/f/（photo照片）。
 
-否定句在 be 动词后加 not，例如 He is not tall. 一般疑问句把 be 动词放到句首，例如 Is she a teacher? 肯定回答 Yes, she is. 否定回答 No, she isn't.
+【连读与语调】
+英语句子中相邻的词常连读：not at all→/nɒtətɔːl/。一般疑问句用升调，陈述句用降调，特殊疑问句一般用降调。正确朗读和模仿能培养语感。
 
-四、一般现在时
+============================================================
+第二篇：名词与冠词
+============================================================
 
-一般现在时表示经常发生的动作、习惯或客观事实。I/You/We/They play football. 当主语是 he、she、it 或单数名词时，动词通常加 s 或 es：He plays football. She watches TV.
+三、名词分类
 
-否定句中，I/you/we/they 使用 do not 或 don't：I don't like milk. he/she/it 使用 does not 或 doesn't，后面的动词恢复原形：He doesn't like milk.
+【可数名词和不可数名词】
+可数名词：可以一个一个数出来的名词，有单数和复数之分，如book-books、apple-apples。不可数名词：不能一个一个数，没有复数形式，如water水、milk牛奶、rice米饭、bread面包、tea茶、juice果汁、air空气、money钱。
+不可数名词计量：a glass of water一杯水，a bottle of milk一瓶牛奶，a cup of tea一杯茶，a piece of bread一片面包，two pieces of paper两张纸。修饰不可数名词用much、a little、some。
 
-一般疑问句使用 Do 或 Does：Do you like apples? Does he go to school by bus? 使用 Does 后，主要动词仍用原形 go，不能写 goes。
+【可数名词复数变化规则】
+一般情况加s：book-books、bag-bags。以s、x、ch、sh结尾加es：bus-buses、box-boxes、watch-watches、dish-dishes。辅音字母+y结尾，变y为i加es：baby-babies、city-cities。以f或fe结尾，变f/fe为v加es：knife-knives、leaf-leaves（但roof-roofs是例外）。以o结尾：有生命的加es（tomato-tomatoes、potato-potatoes），无生命的加s（photo-photos、piano-pianos）。以o结尾记口诀：黑人英雄爱吃土豆西红柿（negro-hero-tomato-potato加es）。
+不规则复数：man-men、woman-women、child-children、foot-feet、tooth-teeth、mouse-mice、fish-fish、sheep-sheep、deer-deer、Chinese-Chinese。
+单复数同形：fish、sheep、deer、Chinese、Japanese。man和woman作定语修饰复数名词时也要变复数：two men teachers两位男老师。
 
-五、现在进行时
+四、名词所有格
 
-现在进行时表示此刻正在进行的动作，基本结构是“主语＋be 动词＋动词 ing”。例如 I am reading. They are playing. She is drawing a picture.
+【有生命名词所有格】
+表示"谁的"，用's：Tom's book（汤姆的书）、my mother's bag（我妈妈的包）。以s结尾的复数名词只加'：the students' books（学生们的书）。共同拥有在最后一个名词后加's：Tom and Mike's room（汤姆和迈克共有的房间）；分别拥有各自加's：Tom's and Mike's rooms（两人各自的房间）。
 
-常见 ing 变化：一般直接加 ing，如 play—playing；以不发音 e 结尾通常去 e 加 ing，如 make—making；部分重读闭音节词双写末尾辅音字母再加 ing，如 run—running。
+【无生命名词所有格】
+用of短语：the name of the book（书的名字）、a map of China（一幅中国地图）。时间、距离、国家等特殊名词也可用's：today's weather（今天的天气）、China's population（中国的人口）。
 
-六、一般过去时
+五、冠词
 
-一般过去时表示过去发生的动作或状态，常和 yesterday、last week、two days ago 等时间词连用。规则动词通常加 ed，如 play—played、clean—cleaned。不规则动词需要单独记忆，如 go—went、see—saw、have—had、eat—ate。
+【不定冠词a/an】
+表示"一个、一位"，用于单数可数名词前。a用于辅音音素开头的词前：a book、a car、a uniform（虽然uniform是字母u开头但发/juː/，辅音音素）；an用于元音音素开头的词前：an apple、an egg、an orange、an hour（hour的h不发音，发元音/ˈaʊə/）。
+判断用a还是an看的是发音不是字母：an honest boy（honest的h不发音，发元音开头）；a university（university发/juː/辅音开头）。
 
-be 动词的过去式：am 和 is 变为 was，are 变为 were。例如 I was at home yesterday. They were happy.
+【定冠词the】
+表示特指（双方都知道的特定事物）：Close the door, please.（请关门。）世界上独一无二的事物：the sun太阳、the moon月亮、the earth地球。第二次提到：I have a cat. The cat is white.（我有一只猫。这只猫是白色的。）序数词前：the first（第一）。最高级前：the tallest（最高的）。乐器前：play the piano（弹钢琴）。
+不用the的情况：球类运动前play football（不加the）；play basketball；三餐前have breakfast；国名、人名、称呼前不加；by+交通工具不加：by bus。
 
-否定句常用 did not 或 didn't，后面的动词用原形：He didn't go to the park. 一般疑问句用 Did 开头：Did you finish your homework?
+============================================================
+第三篇：代词
+============================================================
 
-七、常见疑问词
+六、人称代词
 
-what 问“什么”，who 问“谁”，whose 问“谁的”，where 问“哪里”，when 问“什么时候”，why 问“为什么”，how 问“怎样”。How many 后接可数名词复数，询问数量；How much 可以询问不可数名词的量或物品价格。
+【主格和宾格】
+主格作主语（动作的发出者）：I我、you你、he他、she她、it它、we我们、they他们。宾格作宾语（动作的承受者）：me、you、him、her、it、us、them。
+例句：I like her.（我喜欢她。I主格作主语，her宾格作宾语。）She helps me.（她帮助我。）
+I在任何位置都大写。并列人称代词顺序：you and I（你和我在前）、he and I。第三人称单数he/she/it作主语时谓语动词要用三单形式。
 
-八、名词单复数
+【形容词性物主代词】
+my我的、your你的、his他的、her她的、its它的、our我们的、their他们的。放在名词前：my book、your bag。不能单独使用，后面必须跟名词。
+【名词性物主代词】
+mine、yours、his、hers、its、ours、theirs。相当于"形容词性物主代词+名词"：This is my pen. = This pen is mine.（这是我的钢笔。）名词性物主代词后不跟名词。易错：It's mine. 是"它是我的"，不是"It's my."。
 
-可数名词可以数出一个、两个。一般复数加 s，如 book—books；以 s、x、ch、sh 结尾的词常加 es，如 box—boxes；辅音字母加 y 结尾，通常把 y 变 i 再加 es，如 baby—babies。常见不规则复数有 child—children、man—men、woman—women。
+七、指示代词、不定代词
 
-不可数名词通常没有复数形式，如 water、milk、rice。表示数量时可以说 a glass of water、two bottles of milk。
+【指示代词】
+this这个（近处单数）、that那个（远处单数）、these这些（近处复数）、those那些（远处复数）。例句：This is a book. These are books.
+【不定代词】
+some一些（用于肯定句）：I have some apples. any一些、任何（用于否定句和疑问句）：I don't have any apples. Do you have any books? 特殊：征求对方意见、表示请求、希望得到肯定回答时，疑问句用some：Would you like some tea? Can I have some water?
+every每个、all所有、each每个（单独每个）、both两者都、either两者任一、neither两者都不、other另一个（的）、another再一个。
+one作代词代替前面提到的可数名词：I have a pen. I like the blue one.（我有一支钢笔。我喜欢蓝色的那支。）
 
-九、冠词 a、an 和 the
+【反身代词】
+myself我自己、yourself你自己、himself他自己、herself她自己、itself它自己、ourselves我们自己、yourselves你们自己、themselves他们自己。例句：I can do it myself.（我自己能做。）
 
-a 和 an 表示“一个”，用于单数可数名词前。a 通常放在辅音音素开头的词前，如 a book；an 放在元音音素开头的词前，如 an apple、an hour。判断时看发音，不只看第一个字母。
+============================================================
+第四篇：动词
+============================================================
 
-the 常表示双方都知道的特定事物，例如 Please close the door. 世界上独一无二的事物前也常用 the，如 the sun。
+八、be动词（am/is/are）
 
-十、介词
+【用法口诀】
+I用am，you用are，is用于他她它，单数is复数are。I am（I'm）、he/she/it is（he's）、you/we/they are（you're、we're、they're）。
+例句：I am a student. You are my friend. He is a boy. We are good friends.
+【否定句】be动词后加not：I'm not a teacher. She isn't happy.
+【一般疑问句】be动词提到句首：Is she a teacher? 肯定回答Yes, she is. 否定回答No, she isn't.
+注意缩写：is not=isn't，are not=aren't，am not没有缩写形式（缩写成ain't是不标准用法）。
 
-表示时间：at 常用于具体时刻，如 at seven o'clock；on 常用于具体某一天，如 on Monday；in 常用于月份、年份、季节或一天的某个时段，如 in May、in 2026、in spring、in the morning。
+九、实义动词（行为动词）
 
-表示位置：in 在里面，on 在表面上，under 在下面，behind 在后面，beside 或 next to 在旁边，between 在两者之间，in front of 在前面。
+【一般现在时的三单形式】
+主语是第三人称单数（he/she/it/单数名词）时，动词加s/es：He likes apples. She watches TV. 变化规则与名词复数相同：一般加s（plays）、以s/x/ch/sh/o结尾加es（watches、goes）、辅音+y变i加es（studies）。
+【否定句和疑问句】
+借助助动词do/does：I/You/We/They用do，He/She/It用does。否定：don't（do not）/doesn't（does not）+动词原形。疑问：Do/Does+主语+动词原形？
+例句：I don't like milk. He doesn't like milk. Do you like apples? Does he go to school by bus? 用does后动词恢复原形（does he go，不能说does he goes）。
+第三人称单数动词变化是小学重点难点：注意"三单主语用三单动词"，助动词does后动词用原形。
 
-十一、情态动词
+十、情态动词
 
-can 表示能力或许可，后接动词原形：I can swim. Can I use your pen? must 表示必须：We must follow the rules. should 表示应该或建议：You should drink enough water. 情态动词后不加 to，主要动词不随主语变化。
+【can】
+表示能力、许可，后接动词原形：I can swim. Can I use your pen? Yes, you can. / No, you can't. can不随主语变化（He can swim. 不加s）。
+【must】表示必须：We must follow the rules. mustn't表示禁止：You mustn't run in the street.
+【should】表示应该、建议：You should drink more water. should后接动词原形。
+【will】表示将要：I will go to Beijing tomorrow. 否定won't，疑问Will you...?
+情态动词后加动词原形，不随主语变化，否定在情态动词后加not。
 
-十二、日常交流
+十一、动词不定式、动名词
 
-问候：Good morning. 早上好。How are you? 你好吗？可以回答 I'm fine, thank you.
+【动词+to do】
+want to do想要做、like to do喜欢做、try to do尝试做、begin to do开始做。例句：I want to buy a book.
+【动词+doing】
+like doing、love doing、enjoy doing、finish doing、go doing（go swimming去游泳、go shopping去购物）。例句：I like swimming. She enjoys dancing.
+【既可以to do又可用doing】
+like/love doing表示一般性喜好，like to do表示具体想做。Stop doing停止做（正在做的），stop to do停下来去做另一件事。
 
-感谢与回应：Thank you. 谢谢。可以回答 You're welcome. 不客气。
+============================================================
+第五篇：时态
+============================================================
 
-道歉：I'm sorry. 对不起。可以回答 That's all right. 或 Never mind.
+十二、一般现在时
 
-购物：How much is it? 它多少钱？I'd like this one. 我想要这个。
+【用法】
+表示经常发生的动作、习惯、客观事实、真理。常与频率副词连用：always总是、usually通常、often经常、sometimes有时候、never从不，以及every day（每天）。
+【结构】
+主语+动词原形/三单。例句：I go to school every day. She gets up at six. The earth moves around the sun.（客观真理。）
+频率副词位置：be动词后、实义动词前：He is always happy. He always gets up early.
 
-问路：Excuse me, where is the library? 请问图书馆在哪里？Go straight and turn left. 直走然后左转。
+十三、现在进行时
 
-十三、阅读和写作
+【用法】表示此刻正在发生的动作。
+【结构】主语+be动词（am/is/are）+动词ing。例句：I am reading. They are playing. She is drawing a picture.
+【动词ing变化规则】一般直接加ing：play-playing、read-reading。以不发音e结尾去e加ing：make-making、write-writing、dance-dancing。重读闭音节末尾辅音字母双写加ing：run-running、swim-swimming、sit-sitting、get-getting。
+【标志词】now现在、look!看！、listen!听！、at the moment此刻。
+现在进行时和一般现在时区分：前者表示正在做（此刻），后者表示经常做（习惯）。
 
-阅读短文时先看标题和图片，猜测主题；再找人物、地点、时间和重复出现的关键词。遇到生词先联系上下文猜意思，不必每个词都立刻查字典。
+十四、一般过去时
 
-写英语句子要注意首字母大写、单词之间留空格、句末有标点。写小短文可以按“开头介绍主题—中间写两三个细节—结尾表达感受”的顺序。例如介绍自己，可以写姓名、年龄、爱好和最喜欢的学科，但在真实网络环境中不要公开个人隐私。
+【用法】表示过去发生的动作或状态。常与yesterday昨天、last week上周、two days ago两天前、just now刚才、in 2020等连用。
+【结构】主语+动词过去式。例句：I played football yesterday. He went to school last Monday.
+【规则动词过去式变化】
+一般加ed：play-played、clean-cleaned。以e结尾加d：like-liked、dance-danced。辅音+y结尾变y为i加ed：study-studied、carry-carried。重读闭音节双写末尾辅音加ed：stop-stopped、plan-planned。
+【不规则动词过去式（必背）】
+go-went、come-came、have/has-had、do-did、eat-ate、drink-drank、see-saw、read-read（读音变化）、write-wrote、take-took、buy-bought、get-got、run-ran、swim-swam、sing-sang、fly-flew、ride-rode、sit-sat、give-gave、make-made、say-said、tell-told、win-won、meet-met、feel-felt、sleep-slept、keep-kept、leave-left、lose-lost、put-put、cut-cut、let-let、read-read、is/am-was、are-were。
+【否定句】did not/didn't+动词原形：I didn't go to school yesterday.（不能用didn't went。）
+【一般疑问句】Did+主语+动词原形？Did you finish your homework? 肯定Yes, I did. 否定No, I didn't.
+【be动词过去式】am/is-was，are-were：I was at home yesterday. They were happy.
+
+十五、一般将来时
+
+【用法】表示将来要发生的动作或状态。常与tomorrow、next week、next year、in the future、soon连用。
+【will结构】主语+will+动词原形。否定：will not/won't。疑问：Will+主语+动词原形？例句：I will go to Beijing tomorrow. Will you come with me? Yes, I will.
+【be going to结构】主语+be going to+动词原形。be动词随主语变化：I am going to... / He is going to... / They are going to...
+be going to表示有计划打算或根据迹象推测：It's going to rain.（要下雨了——看天色推测。）
+will和be going to可互换，但be going to更强调事先计划，will更多表示临时决定。
+
+十六、现在完成时（高年级了解）
+
+主语+have/has+动词过去分词。表示过去发生的动作对现在造成的影响或从过去持续到现在的动作。常与already、just、ever、never、yet连用。例句：I have finished my homework.（我做完作业了。）小学阶段了解结构即可。
+
+============================================================
+第六篇：句法
+============================================================
+
+十七、句子成分与结构
+
+【五种基本句型（了解）】
+主+谓：The sun rises.（太阳升起。）主+谓+宾：I like English.（我喜欢英语。）主+系+表：She is a teacher.（她是老师。）主+谓+双宾：He gave me a book.（他给我一本书。）主+谓+宾+宾补：We call him Tom.（我们叫他汤姆。）
+小学阶段主要掌握"主+谓+宾""主+系+表"两种最基本结构，以及there be句型。
+
+十八、句子的种类
+
+【陈述句】说明事实，句末句号。肯定句：I like apples. 否定句：I don't like apples.
+【疑问句】
+一般疑问句：用yes/no回答，be/助动词/情态动词提前。例句：Are you a student? Do you like it? Can you swim?
+特殊疑问句：疑问词+一般疑问句语序。疑问词：what什么、who谁、whose谁的、where哪里、when什么时候、what time几点、why为什么、how怎样、how old多大、how many多少（可数）、how much多少（不可数）/多少钱、which哪个、how often多久一次、how long多长时间。
+选择疑问句：or连接两个选项：Do you like tea or coffee?
+反意疑问句（了解）：前肯定后否定，前否定后肯定：You are a student, aren't you?
+【感叹句】What+（a/an）+形容词+名词！或How+形容词/副词！例句：What a beautiful flower! How beautiful the flower is!
+【祈使句】省略主语you，动词原形开头。肯定：Open the door, please. 否定：Don't run in the classroom. Let's go!（Let's do sth表示建议。）
+【there be句型】
+表示"某处有某物"，be动词由后面名词决定（就近原则）：There is a book on the desk. There are two pens in the pencil case. There is some milk in the glass.
+否定：There isn't a book... 疑问：Is there a book...? Yes, there is. / No, there isn't.
+there be和have/has的区别：there be表示"某处存在"，have/has表示"某人有"：There is a book.（存在。）I have a book.（拥有。）不能说There have a book.
+
+十九、常见句型结构
+
+【be动词句型】主语+be+表语：I am a student. He is tall.
+【have/has句型】表示拥有：I have a pen. She has a cat.（三单用has。）
+【Can句型】Can you...? 能…吗？I can...
+【Let's句型】Let's go to school. 我们上学去吧。
+【How many句型】How many books do you have? 你有多少本书？回答：I have fifteen books.
+【What's the weather like?】询问天气。
+【What time...?】询问时间：What time is it? It's eight o'clock.
+【Would you like...?】Would you like some tea? 表示礼貌询问/邀请。回答：Yes, please. / No, thanks.
+【There is/are...】某处有某物。
+【It's time to do sth / It's time for sth】到做某事的时间了：It's time to go to school. / It's time for class.
+
+============================================================
+第七篇：日常交际用语
+============================================================
+
+二十、情景交际大全
+
+【问候与介绍】
+Hello! / Hi! 你好！Good morning/afternoon/evening! 早上/下午/晚上好！How are you? 你好吗？Fine, thanks. / I'm fine, thank you. 很好，谢谢。Nice to meet you. 见到你很高兴。（回答：Nice to meet you, too.）What's your name? 你叫什么名字？My name is Tom. 我叫汤姆。How do you do? 你好！（回答：How do you do?）Long time no see. 好久不见。
+
+【告别】
+Goodbye. / Bye. 再见。See you later. 回头见。See you tomorrow. 明天见。Good night. 晚安。
+
+【感谢与应答】
+Thank you. / Thanks. 谢谢。Thanks a lot. 非常感谢。You're welcome. 不客气。Not at all. 不用谢。That's all right. 没关系。My pleasure. 我的荣幸。
+
+【道歉与应答】
+I'm sorry. 对不起。Sorry, I'm late. 抱歉我迟到了。That's all right. 没关系。Never mind. 不要紧。It doesn't matter. 没关系。
+
+【请求与许可】
+Can I help you? 需要帮忙吗？/ 你要什么？Can/May I come in? 我可以进来吗？Of course. / Sure. 当然可以。I'm sorry, you can't. 抱歉不行。Can you help me? 你能帮我吗？Excuse me. 打扰一下/劳驾。
+
+【询问与回答】
+What's this/that? 这是什么/那是什么？It's a pen. 一支钢笔。Who is he? 他是谁？He is my father. 我爸爸。Whose book is this? 这是谁的书？It's mine. 我的。Where is the cat? 猫在哪里？It's under the chair. 在椅子下面。When do you get up? 你什么时候起床？At six. 六点。Why do you like it? 你为什么喜欢它？Because it's fun. 因为有趣。How do you go to school? 你怎么上学？By bus. 乘公交。
+
+【打电话】
+Hello! May I speak to Amy? 你好！请艾米接电话。This is Amy speaking. 我是艾米。Is that Tom? 是汤姆吗？Sorry, she's not in. 抱歉她不在。Can I take a message? 需要留口信吗？Hold on, please. 请稍等。Bye. 再见。
+
+【购物】
+Can I help you? 你要买什么？I'd like a pair of shoes. 我想要一双鞋。How much is it? / How much are they? 多少钱？It's/They're fifty yuan. 五十元。Here you are. 给你。That's too expensive. 太贵了。I'll take it. 我买了。
+
+【点餐】
+What would you like? 你想吃什么/喝什么？I'd like some noodles. 我想要面条。Would you like something to drink? 要喝点什么吗？A glass of juice, please. 请来杯果汁。Anything else? 还要别的吗？That's all. 就这些了。Bill, please. 请结账。
+
+【问路】
+Excuse me, where is the hospital? 请问医院在哪里？Go straight and turn left. 直走然后左转。It's on your right. 在你右边。How can I get to the park? 我怎样去公园？Take the No.5 bus. 坐5路公交。Is it far? 远吗？It's about ten minutes on foot. 步行大约十分钟。
+
+【看病】
+What's the matter? / What's wrong with you? 你怎么了？I have a headache. 我头疼。I feel sick. 我觉得不舒服。You should see a doctor. 你应该去看医生。Take some medicine. 吃些药。Drink more water. 多喝水。Get well soon! 祝你早日康复！
+
+【天气】
+What's the weather like today? 今天天气怎么样？It's sunny. 晴天。It's raining. 下雨了。It's warm/cold/hot/cool. 温暖/冷/热/凉爽。How's the weather in Beijing? 北京天气如何？
+
+【时间与日期】
+What time is it? 现在几点了？It's half past seven. 七点半。What day is it today? 今天星期几？It's Monday. 星期一。What's the date today? 今天几号？It's May the first. 五月一日。
+
+【兴趣与爱好】
+What do you like? 你喜欢什么？I like drawing. 我喜欢画画。What's your hobby? 你的爱好是什么？My hobby is collecting stamps. 我的爱好是集邮。Do you like swimming? 你喜欢游泳吗？Yes, I do. / No, I don't.
+
+【建议与祝愿】
+Let's go to the park. 我们去公园吧。Good idea! 好主意！How about going swimming? 去游泳怎么样？Happy birthday! 生日快乐！Merry Christmas! 圣诞快乐！Happy New Year! 新年快乐！Have a good time! 玩得开心！Good luck! 祝你好运！Well done! 做得好！Congratulations! 恭喜你！
+
+【日常课堂用语】
+Stand up. 起立。Sit down, please. 请坐。Open your books. 打开书。Close your books. 合上书。Listen to me. 听我说。Read after me. 跟我读。Look at the blackboard. 看黑板。Turn to page ten. 翻到第十页。Hands up. 举手。Let me try. 让我试试。I don't know. 我不知道。Can you say it again? 你能再说一遍吗？What does it mean? 它是什么意思？May I go to the toilet? 我可以去厕所吗？
+
+============================================================
+第八篇：阅读理解与写作
+============================================================
+
+二十一、阅读技巧
+
+【阅读步骤】
+先看标题和图片猜主题→快速通读了解大意→带着问题细读找答案→联系上下文猜生词→检查答案。
+【猜词技巧】
+利用上下文线索、构词法（前缀un-不、后缀-er人）、常识判断。遇到生词先猜，不必每个都查字典。
+【常见题型】
+阅读理解：判断正误（T/F）、选择、回答问题、填空。做完要检查——在文中找到答案依据（划线）。
+【小学英语阅读文类型】自我介绍、家庭介绍、学校生活、动物、兴趣爱好、故事（小短文）、日记、书信、广告、通知。
+
+二十二、写作基础
+
+【写作步骤】
+审题（写什么、什么人称、什么时态）→列要点（写几个要点）→写句子（注意语法）→检查（时态、单复数、标点、大小写）。
+【写作要求】
+句子完整、单词拼写正确、大小写和标点正确（句号是"."不是"。"）、人称和时态一致、内容切题、条理清楚。
+【常见写作主题】
+自我介绍：My name is... I'm... years old. I'm from... I like... My favourite subject is...
+我的家庭：There are... people in my family. My father is a... My mother is... I love my family.
+我的朋友：She/He is... She/He has... She/He likes... We often play together.
+我的周末：On Saturday, I... On Sunday, I... I was very happy.
+我最喜欢的季节：My favourite season is... Because I can...
+我的学校：Our school is... There is/are... I like my school.
+
+============================================================
+第九篇：常考易错点
+============================================================
+
+二十三、高频易错与对比
+
+【易错1：be动词和实义动词】
+系表结构用be（I am happy），实义动词句不用be（I like apples，不说I am like apples）。"我很喜欢"是I like it very much，不是I very like it（very修饰形容词副词，不能直接放动词前，应说like it very much）。
+【易错2：三单】
+He like→He likes；does后动词原形：Does he likes?错，Does he like?对。
+【易错3：人称代词主宾格】
+I like she错→I like her对。Me am a student错→I am a student对。
+【易错4：物主代词】
+This is my. 错→This is mine. 对（名词性物主代词）。This is my book. 对。
+【易错5：名词复数】
+不可数名词没有复数：two waters错→two glasses of water对。
+【易错6：冠词】
+an hour（h不发音）；a university；play football（不加the）；play the piano（加the）。
+【易错7：there be】
+There have a book. 错→There is a book. 对。就近原则：There is a pen and two books.（靠近is的a pen是单数）。
+【易错8：a/an判断看发音】
+an umbrella（u发/ʌ/元音）但a useful book（useful发/juː/辅音）。
+【易错9：时间介词】
+at+时刻（at seven）、on+具体一天（on Monday）、in+月份季节年份（in May、in spring、in 2026）、in the morning/afternoon/evening（但on a cold morning是特指某天早晨用on）。
+【易错10：频率副词位置】
+be动词后：He is always late. 实义动词前：He always gets up early.
+【易错11：like doing/to do】
+喜欢做某事用like doing（He likes swimming）。表示这次想用like to do（I'd like to go）。would like to do想要做：I'd like to have a rest.
+【易错12：come/go与here/there】
+Come here!（到这里来）Go there!（到那里去）。不能说Come there。
+【易错13：look/sound等系动词】
+后接形容词：look happy、sound great、feel tired（不接副词）。That sounds great. 对，That sounds greatly. 错。
+【易错14：much/many】
+many+可数复数（many books），much+不可数（much water），a lot of+都行（a lot of books/milk）。
+【易错15：选择疑问句和一般疑问句】
+选择疑问句不能只答yes/no：Do you like tea or coffee?→Tea, please. 不能答Yes.
+
+============================================================
+第十篇：文化知识
+============================================================
+
+二十四、英语国家文化常识
+
+【主要英语国家】
+英国（UK，首都伦敦London）、美国（USA，首都华盛顿Washington D.C.）、加拿大（Canada）、澳大利亚（Australia，首都堪培拉）、新西兰（New Zealand）。英国国旗Union Jack、美国国旗the Stars and Stripes。
+【节日】
+圣诞节（Christmas，12月25日，圣诞老人Santa Claus、圣诞树Christmas tree、礼物）、万圣节（Halloween，10月31日，南瓜灯jack-o'-lantern、装扮trick or treat不给糖就捣蛋）、感恩节（Thanksgiving，11月第四个星期四，火鸡turkey）、复活节（Easter，彩蛋和兔子）、新年（New Year）。中国节日用英语表达：Spring Festival春节、Mid-Autumn Festival中秋节、Dragon Boat Festival端午节。
+【饮食文化】
+西方人早餐吃面包牛奶谷物、午餐简单、晚餐较丰盛。用刀叉fork and knife。快餐：汉堡包hamburger、薯条French fries、披萨pizza、三明治sandwich、热狗hot dog。
+【中西方差异（了解）】
+中国人用筷子chopsticks，西方人用刀叉。颜色象征不同（红色在中国喜庆、在西方有时表示危险）。数字13在西方不吉利（楼号常跳过13层）。了解差异尊重文化。
+
+二十五、学习习惯与方法
+
+【听说读写全面发展】
+听：每天听英语课文、英文儿歌、英语动画，磨耳朵培养语感。说：大胆开口，不怕说错，跟读模仿语音语调，大声朗读。读：读课文、读简单绘本（分级读物）、看图文并茂的小故事。写：抄写单词、仿写句子、写简短日记。
+【单词记忆】结合拼读规律记（见词汇书），词不离句、句不离篇，在句子和语境中记单词。
+【语法学习】先理解用法和例句，再自己造句。不要死记语法术语，通过例句体会规则。
+【善用资源】英语动画（Peppa Pig小猪佩奇）、英文儿歌（Twinkle Twinkle Little Star）、分级读物。每天坚持15-20分钟，效果比突击一次好得多。
+
+英语是一门需要积累的语言，就像搭积木——字母是积木块，单词是基本单元，句子是结构，语法是连接规则。每天进步一点点，积少成多，你会发现自己慢慢能听懂、能说出、能读懂、能写出真正的英语了。

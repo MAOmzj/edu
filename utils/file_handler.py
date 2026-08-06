@@ -8,6 +8,7 @@ from langchain_core.documents import Document
 
 
 def calculate_sha256(file_path: str | Path) -> str:
+    """分块读取知识文件并计算 SHA-256 摘要，用于判断文件是否变化。"""
     path = Path(file_path)
     if not path.is_file():
         raise FileNotFoundError(f"知识文件不存在：{path}")
@@ -23,6 +24,7 @@ def list_knowledge_files(
     directory: str | Path,
     allowed_types: tuple[str, ...],
 ) -> tuple[Path, ...]:
+    """递归列出知识目录下所有符合扩展名要求的文件并稳定排序。"""
     root = Path(directory)
     if not root.is_dir():
         raise NotADirectoryError(f"知识库目录不存在：{root}")
@@ -40,6 +42,7 @@ def list_knowledge_files(
 
 
 def load_documents(file_path: str | Path) -> list[Document]:
+    """根据扩展名使用对应加载器，将 TXT 或 PDF 转换为文档列表。"""
     path = Path(file_path)
     suffix = path.suffix.lower()
     if suffix == ".txt":

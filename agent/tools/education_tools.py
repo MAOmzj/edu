@@ -1,4 +1,8 @@
-"""教育 Agent 可调用的工具。"""
+"""教育 Agent 可调用的工具。
+
+@tool 会读取函数名、参数类型和文档字符串，生成模型能理解的工具说明。
+模型只是在对话中“申请调用”；LangChain 真正执行下面的 Python 函数并返回结果。
+"""
 
 from langchain_core.tools import tool
 
@@ -7,10 +11,12 @@ from utils.config_handler import app_conf
 from utils.math_tool import safe_calculate
 
 
+# 模块加载时只创建轻量外壳，内部向量库会在第一次 search_knowledge 时延迟创建。
 qa_service = EducationQAService()
 
 
 def normalize_subject(subject: str) -> str:
+    """规范化学科名称，不受支持或为空时统一回退为“综合”。"""
     value = (subject or "综合").strip()
     supported = set(app_conf["supported_subjects"])
     return value if value in supported else "综合"

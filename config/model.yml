@@ -1,3 +1,9 @@
-chat_model_name: qwen3-max
+chat_model_name: deepseek-v4-flash
 embedding_model_name: text-embedding-v4
+local_embedding_dimension: 1024
+embedding_max_retries: 3
 temperature: 0.2
+# 小学问答以快速、稳定为主。开启思考模式会增加延迟和输出费用。
+thinking_enabled: false
+request_timeout: 60
+max_retries: 2

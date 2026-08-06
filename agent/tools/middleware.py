@@ -20,6 +20,7 @@ def monitor_tool(
     request: ToolCallRequest,
     handler: Callable[[ToolCallRequest], ToolMessage | Command],
 ) -> ToolMessage | Command:
+    """包裹每次工具调用，记录开始、成功或异常状态后返回调用结果。"""
     tool_name = request.tool_call["name"]
     logger.info("调用教育工具：%s", tool_name)
     try:
@@ -33,5 +34,6 @@ def monitor_tool(
 
 @before_model
 def log_before_model(state: AgentState, runtime: Runtime) -> None:
+    """在调用模型前记录当前消息数量，方便观察 Agent 运行状态。"""
     del runtime
     logger.debug("准备调用模型，当前消息数：%d", len(state["messages"]))

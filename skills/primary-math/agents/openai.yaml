@@ -1,0 +1,4 @@
+interface:
+  display_name: "小学数学教学"
+  short_description: "按年级讲解小学数学题，并系统核对算式、步骤、答案与单位"
+  default_prompt: "使用 $primary-math 分步骤讲解这道小学数学题并核对答案。"

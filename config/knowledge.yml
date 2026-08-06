@@ -1,10 +1,26 @@
 collection_name: primary_education
-persist_directory: storage/chroma
+
+# 修改这一项即可切换向量后端：sqlite 或 chroma。
+vector_backend: sqlite
+
+# 两种后端使用独立的数据和清单，切换时不会互相误判为已经完成索引。
+sqlite_database_path: storage/knowledge_vectors.sqlite3
+sqlite_manifest_path: storage/index_manifest_sqlite.json
+chroma_persist_directory: storage/chroma
+chroma_manifest_path: storage/index_manifest_chroma.json
+
 data_path: data/knowledge
-manifest_path: storage/index_manifest.json
 allowed_file_types: [txt, pdf]
 k: 4
 
+# SQLite 混合检索：语义向量为主，BM25 精确关键词为辅。
+hybrid_vector_weight: 0.65
+hybrid_bm25_weight: 0.35
+bm25_k1: 1.5
+bm25_b: 0.75
+
 chunk_size: 500
 chunk_overlap: 60
+# text-embedding-v4 每次最多处理 10 段文本，后端会自动分批。
+embedding_batch_size: 10
 separators: ["\n\n", "\n", "。", "！", "？", ".", "!", "?", "；", ";", "，", ",", " ", ""]

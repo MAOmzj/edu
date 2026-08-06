@@ -9,6 +9,56 @@ supported_subjects:
 
 agent:
   recursion_limit: 12
+  # 初次审核不通过后最多重写一次，防止“回答—审核”无限循环。
+  max_review_retries: 1
+
+# 教育 Skill 规定“怎样教学”，Tool 负责真正查询知识或执行计算。
+# 学科 Agent 只加载当前学科对应的 Skill，避免数学规则影响其他学科。
+skills:
+  enabled: true
+  max_instruction_chars: 6000
+  subject_paths:
+    数学: skills/primary-math/SKILL.md
+
+# 统一 Context Manager 的上下文预算。最近消息优先，较旧或低优先级内容先裁剪。
+context:
+  # Prompt 中最多选择的最近原始消息数量。
+  recent_message_limit: 8
+  max_conversation_chars: 4000
+  max_long_term_chars: 1800
+  max_review_feedback_chars: 1200
+  # 消息达到10条或会话文字超过4000字符时，把较旧消息增量并入摘要。
+  summary_enabled: true
+  summary_trigger_messages: 10
+  summary_keep_recent_messages: 6
+  summary_trigger_chars: 4000
+  max_summary_chars: 1400
+
+# Tavily 只补充本地知识库缺少的资料和时效信息，不替代 SQLite RAG。
+web_search:
+  enabled: true
+  # 审核 Agent 是否也能联网。默认关闭可减少延迟和 Tavily 调用次数。
+  review_enabled: false
+  max_results: 3
+  max_query_chars: 200
+  summary_max_chars: 600
+  search_depth: basic
+  # 开启后，发送给 Tavily 的 include_domains 和返回结果都会受到白名单限制。
+  trusted_domains_only: true
+  trusted_domains:
+    - gov.cn
+    - moe.gov.cn
+    - pep.com.cn
+    - cas.cn
+    - cast.org.cn
+    - cdstm.cn
+    - nasa.gov
+    - noaa.gov
+    - usgs.gov
+    - si.edu
+    - who.int
+    - unicef.org
+    - unesco.org
 
 memory:
   database_path: storage/education_memory.sqlite3

@@ -25,6 +25,7 @@ _UNARY_OPERATORS = {
 
 
 def _check_result(value: int | float) -> int | float:
+    """校验中间计算结果是有限且未超过安全范围的普通数字。"""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise ValueError("表达式中只能使用数字")
     if not math.isfinite(float(value)):
@@ -35,6 +36,7 @@ def _check_result(value: int | float) -> int | float:
 
 
 def _evaluate(node: ast.AST, depth: int = 0) -> int | float:
+    """递归计算经过白名单限制的算术语法树，并阻止危险表达式。"""
     if depth > 20:
         raise ValueError("表达式嵌套过深")
 
@@ -63,6 +65,7 @@ def _evaluate(node: ast.AST, depth: int = 0) -> int | float:
 
 
 def safe_calculate(expression: str) -> str:
+    """规范化并安全计算基础算术表达式，返回便于展示的字符串结果。"""
     if not isinstance(expression, str) or not expression.strip():
         raise ValueError("算式不能为空")
     if len(expression) > MAX_EXPRESSION_LENGTH:
