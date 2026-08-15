@@ -1,3 +1,8 @@
+/*
+ * 文件用途：管理匿名学生ID、多会话窗口、历史加载、最终答案流式展示和页面交互。
+ * 调用关系：index.html在浏览器中加载本文件；本文件调用app.py提供的/api接口并操作DOM。
+ * 修改易踩坑：会话切换时要防止旧请求串窗，SSE只处理公开最终答案，localStorage不能保存密钥。
+ */
 const storageKeys = {
   student: "education_student_id",
   conversation: "education_conversation_id",

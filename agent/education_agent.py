@@ -1,3 +1,6 @@
+# 文件用途：提供 EducationAgent.answer() 稳定入口，内部运行“学科回答—审核—记忆”三子 Agent 工作流。
+# 调用关系：memory/runtime.py 创建本类，app.py 与 main.py 调用；本文件调用 multi_agent 工具构造器、workflow、memory/store 和 model/factory。
+# 修改易踩坑：answer() 是对外唯一契约；Checkpoint 线程编号必须拼接 student_id 与 thread_id，不能只用其中一个。
 """小学生教育知识问答 Agent 的对外入口。
 
 外部代码只需要认识 EducationAgent.answer()。这个“门面类”会在内部完成：
@@ -5,6 +8,10 @@
     参数校验 -> 登记会话 -> 准备 State -> 运行主协调图 -> 取出最终答案
 
 它本身不编写答案；学科、审核和记忆三个子 Agent 的先后顺序由 workflow.py 决定。
+
+上游调用者：memory/runtime.py（唯一创建者）、app.py（Web）、main.py（CLI）、测试。
+下游调用者：三个 build_* 子 Agent 工具、workflow.py 主协调图、memory/store.py、
+model/factory.py、utils/config_handler.py（详见各方法行内注释）。
 """
 
 from __future__ import annotations
@@ -48,17 +55,20 @@ class EducationAgent:
 
         # 正常运行时三个 Tool 都需要同一个聊天模型。测试可以直接传入假 Tool，
         # 这样不需要 API Key，也不会访问在线模型。
+        # 调用下游：model/factory.py 的 create_chat_model()（底层是通义 qwen3-max）。
         if subject_tool is None or review_tool is None or memory_tool is None:
             model = model or create_chat_model()
 
         # 这里体现了“把子 Agent 当作 Tool”：build_* 先创建一个独立子 Agent，
         # 再包成具有固定入参/出参的 Tool，主协调器只调用 Tool，不接触内部消息。
+        # 调用下游：agent/multi_agent/subject_agent.py、review_agent.py、memory_agent.py。
         self.subject_tool = subject_tool or build_subject_agent_tool(model)
         self.review_tool = review_tool or build_review_agent_tool(model)
         self.memory_tool = memory_tool or build_memory_agent_tool(model)
 
         # Checkpointer 保存 LangGraph State（短期、多轮），memory_store 保存可查询的
         # 业务历史和跨会话长期记忆。两者职责不同，但正式运行时都落到 SQLite。
+        # 调用下游：agent/multi_agent/workflow.py 编译出主协调图（后续 answer() 调它）。
         self.workflow = EducationMultiAgentWorkflow(
             subject_tool=self.subject_tool,
             review_tool=self.review_tool,
@@ -136,6 +146,7 @@ class EducationAgent:
         normalized_subject = subject if subject in supported else "综合"
 
         # 先登记会话。即使模型中途失败，删除会话接口仍能找到并清理 Checkpoint。
+        # 调用下游：memory/store.py 的 EducationMemoryStore.ensure_conversation()。
         if self.memory_store is not None:
             self.memory_store.ensure_conversation(
                 student_id=student_id,
@@ -147,6 +158,7 @@ class EducationAgent:
 
         # turn_id 由服务器生成，同一轮发生节点重试时仍保持不变，防止重复入库。
         turn_id = f"turn-{uuid4().hex}"
+        # 调用下游：agent/multi_agent/workflow.py 的主协调图（invoke 跑完整张图）。
         # 传入的字典就是本轮初始 State。图中每个节点只返回自己修改的字段，
         # LangGraph 会把这些局部结果逐步合并到同一份 State 中。
         result = self.workflow.invoke(

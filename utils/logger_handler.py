@@ -1,3 +1,6 @@
+# 文件用途：集中创建项目 logger、输出格式和日志文件位置。
+# 调用关系：Agent、RAG、API 等模块导入 logger；本文件调用标准 logging 和路径工具。
+# 修改易踩坑：不要重复添加 Handler，也不能记录 API Key、学生原文或完整模型上下文。
 """应用日志配置。"""
 
 import logging

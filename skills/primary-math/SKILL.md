@@ -3,6 +3,12 @@ name: primary-math
 description: Solve and explain primary-school mathematics for grades 1-6. Use for arithmetic, word problems, geometry, fractions, decimals, units, ratios, and other questions whose selected subject is 数学.
 ---
 
+<!--
+文件用途：规定小学数学Agent识题、检索、计算、验算、单位检查和适龄讲解流程。
+调用关系：agent/skill_loader.py读取并剥离本说明；Context Manager把正文注入数学学科Agent。
+修改易踩坑：YAML frontmatter必须保持文件第一段，工具名要与真实Tool一致，不能要求模型泄露推理或绕过审核。
+-->
+
 # 小学数学教学流程
 
 ## 解题顺序

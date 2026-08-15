@@ -1,3 +1,6 @@
+# 文件用途：验证安全计算器支持的基础运算和对危险/超限表达式的拒绝。
+# 调用关系：unittest 调用本文件；本文件直接调用 utils/math_tool.py。
+# 修改易踩坑：新增合法语法时仍要保留代码执行、除零、超大指数和空输入测试。
 import unittest
 
 from utils.math_tool import safe_calculate

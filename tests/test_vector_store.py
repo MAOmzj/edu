@@ -1,3 +1,6 @@
+# 文件用途：验证 SQLite 向量持久化、批处理、增量同步和后端状态报告。
+# 调用关系：unittest 调用本文件；本文件调用 rag/vector_store.py 与 vector_backends.py。
+# 修改易踩坑：使用假 Embedding 保持离线；所有临时索引、清单和连接都要在测试后释放。
 import sqlite3
 import unittest
 from contextlib import closing

@@ -1,3 +1,6 @@
+# 文件用途：在模型和工具执行前后记录最少量运行指标，便于定位 Agent 故障。
+# 调用关系：subject/review Agent 注册本中间件；LangChain 在每次模型或工具调用时触发它。
+# 修改易踩坑：日志中不能写学生问题正文、模型答案、密钥或完整工具参数。
 """Agent 中间件：记录运行状态，但不记录学生隐私或答案正文。"""
 
 from collections.abc import Callable

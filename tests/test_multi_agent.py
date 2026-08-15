@@ -1,3 +1,6 @@
+# 文件用途：用假子 Agent 验证主协调流程、审核重试、摘要、短长期记忆和线程隔离。
+# 调用关系：unittest 调用本文件；本文件调用 EducationAgent 和三个真实 Tool 包装器。
+# 修改易踩坑：Stub 返回数量必须覆盖调用次数，测试不得创建在线模型或复用真实学生数据库。
 """多 Agent 子 Agent-as-Tool 工作流测试，全程不调用在线模型。"""
 
 import tempfile

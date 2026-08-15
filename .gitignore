@@ -1,3 +1,6 @@
+# 文件用途：阻止密钥、虚拟环境、缓存、日志和本地数据库进入 Git。
+# 调用关系：Git 自动读取本文件；项目运行代码不会调用它。
+# 修改易踩坑：不要取消 .env、storage、logs 等忽略规则，否则可能提交密钥或大量生成数据。
 # 密钥与本地环境
 .env
 .env.*
@@ -24,6 +27,9 @@ storage/*
 !storage/.gitkeep
 chroma_db/
 md5.text
+
+# 本地完整版开发文档（仅保留本地，不上传；GitHub 展示简化版 README.md）
+README_FULL.md
 
 # 编辑器与系统文件
 .vscode/

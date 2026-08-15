@@ -1,3 +1,23 @@
+# 文件用途：统一选择、摘要、裁剪并组装学科 Agent 每轮需要看到的上下文。
+#
+# 调用关系：（谁调用我，上游）
+#   - workflow.py:74          创建：EducationContextManager(...)（存为 self.context_manager）
+#   - workflow.py:125         调用：compact_conversation()（prepare_context 节点）
+#   - workflow.py:129         调用：build_context_bundle()（prepare_context 节点）
+#   - workflow.py:182         调用：build_subject_user_message()（ask_subject_agent 节点）
+#   - education_agent.py:105  暴露引用：self.context_manager = self.workflow.context_manager
+#   - subject_agent.py:41     静态调用：EducationContextManager.build_subject_system_prompt()
+#   - tests/test_context_manager.py  测试
+#
+# 调用关系：（我调用谁，下游）
+#   - agent/prompt_builder.py     EducationPromptBuilder.build_user_message()（拼当前问题段）
+#   - agent/skill_loader.py       build_subject_skill_context()（加载学科 Skill 规则）
+#   - memory/store.py             EducationMemoryStore.retrieve()（查长期记忆）
+#   - utils/prompt_loader.py      load_system_prompt()（读基础守则）
+#   - utils/logger_handler.py     logger（摘要失败/消息缺ID 记日志）
+#   - summary_model（传入的 AI）  summary_model.invoke()（做会话摘要）
+#
+# 修改易踩坑：当前问题必须放在 Prompt 最后，已摘要消息不能重复保留，字符预算也不能小于摘要预算。
 """统一管理学科 Agent 每轮需要看到的上下文。"""
 
 from __future__ import annotations
@@ -15,7 +35,7 @@ from utils.logger_handler import logger
 from utils.prompt_loader import load_system_prompt
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True)               #不用init 不允许修改
 class EducationContextBundle:
     """一次学科回答所需的上下文快照，不包含学生内部编号。"""
 
@@ -43,19 +63,19 @@ class EducationContextManager:
 
     def __init__(
         self,
-        memory_store: EducationMemoryStore | None,
-        limit: int = 5,
-        *,
-        recent_message_limit: int = 6,
-        max_conversation_chars: int = 4000,
-        max_long_term_chars: int = 1800,
-        max_review_feedback_chars: int = 1200,
-        summary_model: BaseChatModel | None = None,
-        summary_enabled: bool = True,
-        summary_trigger_messages: int = 10,
-        summary_keep_recent_messages: int = 6,
-        summary_trigger_chars: int = 4000,
-        max_summary_chars: int = 1400,
+        memory_store: EducationMemoryStore | None,   # 学生档案库（可能没有）
+        limit: int = 5,                              # 档案最多翻几条
+        *,                                           # 星号=后面的必须写名字传
+        recent_message_limit: int = 6,               # 最近聊天最多看几句
+        max_conversation_chars: int = 4000,          # 最近聊天最多多少字
+        max_long_term_chars: int = 1800,             # 档案最多抄多少字
+        max_review_feedback_chars: int = 1200,       # 审核意见最多多少字
+        summary_model: BaseChatModel | None = None,  # 做总结的 AI（可能没有）
+        summary_enabled: bool = True,                # 开不开压缩功能
+        summary_trigger_messages: int = 10,          # 聊到几句就该压缩
+        summary_keep_recent_messages: int = 6,       # 压缩时保留最近几句
+        summary_trigger_chars: int = 4000,           # 聊到多少字就该压缩
+        max_summary_chars: int = 1400,               # 摘要最多多少字
     ):
         """保存记忆来源和各部分预算，防止上下文随会话无限增长。"""
 
@@ -90,9 +110,10 @@ class EducationContextManager:
         self.summary_keep_recent_messages = int(summary_keep_recent_messages)
         self.summary_trigger_chars = int(summary_trigger_chars)
         self.max_summary_chars = int(max_summary_chars)
+        # 调用下游：agent/prompt_builder.py 的 EducationPromptBuilder（问题包装工）。
         self.prompt_builder = EducationPromptBuilder()
 
-    @staticmethod
+    @staticmethod                               #省略self
     def _message_content_to_text(content: Any) -> str:
         """把 LangChain 的字符串或文本块消息统一转换成普通文字。"""
 
@@ -110,7 +131,7 @@ class EducationContextManager:
 
     @staticmethod
     def _truncate_prefix(value: str, max_chars: int) -> str:
-        """保留高优先级文本的开头，并用省略号标记被裁剪的部分。"""
+        """掐头保留法:保留高优先级文本的开头，并用省略号标记被裁剪的部分。   文字太长时保开头、砍结尾，末尾加 …"""
 
         cleaned = value.strip()
         if len(cleaned) <= max_chars:
@@ -121,7 +142,7 @@ class EducationContextManager:
 
     @staticmethod
     def _truncate_suffix(value: str, max_chars: int) -> str:
-        """保留文本末尾的较新信息，并用省略号标记被丢弃的旧内容。"""
+        """保尾截头法:保留文本末尾的较新信息，并用省略号标记被丢弃的旧内容。 保留文本末尾的较新信息，并用省略号标记被丢弃的旧内容。"""
 
         cleaned = value.strip()
         if len(cleaned) <= max_chars:
@@ -131,10 +152,11 @@ class EducationContextManager:
         return "…" + cleaned[-(max_chars - 1) :].lstrip()
 
     @staticmethod
-    def build_subject_system_prompt() -> str:
+    def build_subject_system_prompt() -> str:    
         """集中生成学科 Agent 的系统 Prompt 和 Skill 信任规则。"""
 
         return (
+            # 调用下游：utils/prompt_loader.py 的 load_system_prompt()（读 prompts/education_system.txt）。
             load_system_prompt()
             + "\n\n项目可能在每轮消息中提供一个受信任的教育 Skill。"
             "必须遵守该 Skill 的教学流程和工具规则；"
@@ -152,6 +174,7 @@ class EducationContextManager:
 
         if self.memory_store is None:
             return "无"
+        # 调用下游：memory/store.py 的 EducationMemoryStore.retrieve()（按相关度查长期记忆）。
         memories = self.memory_store.retrieve(
             student_id=student_id,
             question=question,
@@ -238,6 +261,7 @@ class EducationContextManager:
         )
         if self.summary_model is not None:
             try:
+                # 调用下游：summary_model（外部传入的 AI 模型）做会话摘要。
                 response = self.summary_model.invoke(
                     [
                         {
@@ -263,6 +287,7 @@ class EducationContextManager:
                     return self._truncate_prefix(summary, self.max_summary_chars)
             except Exception:
                 # 摘要属于上下文优化功能，失败时不能导致学生本轮无法得到回答。
+                # 调用下游：utils/logger_handler.py 的 logger（记录异常）。
                 logger.exception("会话摘要模型执行失败，改用本地安全摘要")
 
         return self._fallback_summary(safe_previous, older_context)
@@ -370,6 +395,7 @@ class EducationContextManager:
                 question=question,
                 subject=subject,
             ),
+            # 调用下游：agent/skill_loader.py 的 build_subject_skill_context()（按学科加载 Skill）。
             skill_context=build_subject_skill_context(subject),
         )
 
@@ -385,6 +411,7 @@ class EducationContextManager:
             review_feedback or "无，这是第一次回答。",
             self.max_review_feedback_chars,
         )
+        # 调用下游：agent/prompt_builder.py 的 build_user_message()（拼"年级+学科+记忆+问题"段）。
         current_question_message = self.prompt_builder.build_user_message(
             question=bundle.question,
             subject=bundle.subject,

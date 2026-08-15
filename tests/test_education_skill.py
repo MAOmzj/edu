@@ -1,3 +1,6 @@
+# 文件用途：验证教育 Skill 的文件校验、学科路由和 Prompt 边界。
+# 调用关系：unittest 调用本文件；本文件调用 agent/skill_loader.py 并读取 primary-math Skill。
+# 修改易踩坑：不要缓存跨测试修改后的 Skill；数学规则不能误注入其他学科。
 """项目教育 Skill 的加载、学科路由和 Prompt 注入测试。"""
 
 import unittest
@@ -11,6 +14,7 @@ class EducationSkillTests(unittest.TestCase):
 
         skill = load_subject_skill("数学")
         self.assertIsNotNone(skill)
+        self.assertNotIn("文件用途：", skill.instructions)
         self.assertEqual(skill.name, "primary-math")
         self.assertIn("search_knowledge", skill.instructions)
         self.assertIn("calculate_expression", skill.instructions)

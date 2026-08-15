@@ -1,3 +1,19 @@
+# 文件用途：用 SQLite 保存完整聊天历史、会话目录、提交幂等记录和结构化长期学习记忆。
+#
+# 调用关系：（谁调用我，上游）
+#   - memory/runtime.py:59           创建：EducationMemoryStore（随 EducationRuntime 启动）
+#   - memory/runtime.py:84/97        转发：delete_conversation()/delete_student_data()
+#   - agent/education_agent.py:148   ensure_conversation()（模型执行前登记会话）
+#   - agent/multi_agent/workflow.py:298  record_turn()（保存一轮问答+长期记忆）
+#   - agent/context_manager.py:178   retrieve()（按相关度查长期记忆）
+#   - app.py:186/235/254/270         stats()/get_history()/list_conversations()/list_memories()
+#   - tests/test_memory.py、tests/test_multi_agent.py  测试
+#
+# 调用关系：（我调用谁，下游）
+#   只调用 Python 标准库（sqlite3、hashlib、re、dataclasses、pathlib），
+#   不调用项目内任何其他文件。
+#
+# 修改易踩坑：所有学生数据查询必须校验 student_id，入库前要脱敏，事务和 turn_id 去重不能删除。
 """SQLite 业务存储：会话历史和跨会话长期学习记忆。
 
 这个文件管理四张业务表：
@@ -22,6 +38,7 @@ from pathlib import Path
 from typing import Any, Iterator, Sequence
 
 
+# 被 context_manager.py 的 build_long_term_context() 消费（retrieve() 的返回值）。
 @dataclass(frozen=True)
 class LongTermMemory:
     """从数据库取出的一条只读长期记忆，供上下文管理器使用。"""
@@ -32,6 +49,7 @@ class LongTermMemory:
     confidence: float
 
 
+# 唯一创建者：memory/runtime.py:59（随 EducationRuntime 启动）。
 class EducationMemoryStore:
     """保存可查询的会话记录，并提炼少量长期学习记忆。"""
 
@@ -440,6 +458,7 @@ class EducationMemoryStore:
             student_id=student_id,
         )
 
+    # 上游调用者：workflow.py:298 的 _save_learning_memory 节点（多 Agent 落库）。
     def record_turn(
         self,
         *,
@@ -544,6 +563,7 @@ class EducationMemoryStore:
                 )
             return True
 
+    # 上游调用者：education_agent.py:148 的 answer()（模型执行前登记会话）。
     def ensure_conversation(
         self,
         *,
@@ -583,6 +603,7 @@ class EducationMemoryStore:
             return {normalized} if normalized else set()
         return {normalized[index : index + 2] for index in range(len(normalized) - 1)}
 
+    # 上游调用者：context_manager.py:178 的 build_long_term_context()（查长期记忆）。
     def retrieve(
         self,
         *,
@@ -638,6 +659,7 @@ class EducationMemoryStore:
             for _, row in ranked[:limit]
         ]
 
+    # 上游调用者：app.py:235 的历史接口（读完整聊天记录）。
     def get_history(self, *, student_id: str, thread_id: str) -> list[dict[str, Any]]:
         """按消息写入顺序读取指定学生在一个会话中的完整聊天记录。"""
         with self._connect() as connection:
@@ -653,6 +675,7 @@ class EducationMemoryStore:
             ).fetchall()
         return [dict(row) for row in rows]
 
+    # 上游调用者：app.py:254 的会话列表接口。
     def list_conversations(self, *, student_id: str, limit: int = 30) -> list[dict[str, Any]]:
         """按最近更新时间倒序列出一个学生的会话摘要。"""
         with self._connect() as connection:
@@ -668,6 +691,7 @@ class EducationMemoryStore:
             ).fetchall()
         return [dict(row) for row in rows]
 
+    # 上游调用者：app.py:270 的记忆列表接口。
     def list_memories(self, *, student_id: str, limit: int = 50) -> list[dict[str, Any]]:
         """按最近更新时间倒序列出一个学生已经形成的长期记忆。"""
         with self._connect() as connection:
@@ -683,6 +707,7 @@ class EducationMemoryStore:
             ).fetchall()
         return [dict(row) for row in rows]
 
+    # 上游调用者：memory/runtime.py:84 转发；最终来自 app.py:286 的删除会话接口。
     def delete_conversation(self, *, student_id: str, thread_id: str) -> bool:
         """删除一个会话，以及由该会话产生的主题和学习难点记忆。"""
         with self._connect() as connection:
@@ -704,6 +729,7 @@ class EducationMemoryStore:
             )
             return cursor.rowcount > 0
 
+    # 上游调用者：memory/runtime.py:97 转发；最终来自 app.py:300 的注销接口。
     def delete_student_data(self, *, student_id: str) -> list[str]:
         """删除一个学生的全部会话和长期记忆，并返回待清理的线程编号。"""
         with self._connect() as connection:
@@ -727,6 +753,7 @@ class EducationMemoryStore:
             )
         return thread_ids
 
+    # 上游调用者：app.py:186 的状态接口（运行时信息汇总）。
     def stats(self) -> dict[str, int]:
         """统计当前数据库中的会话、消息和长期记忆数量。"""
         with self._connect() as connection:

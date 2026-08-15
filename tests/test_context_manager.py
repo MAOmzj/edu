@@ -1,3 +1,6 @@
+# 文件用途：验证统一 Context Manager 的选择、裁剪、摘要、Skill 和 Prompt 组装行为。
+# 调用关系：unittest 调用本文件；本文件调用 agent/context_manager.py 并使用假记忆/假摘要模型。
+# 修改易踩坑：测试必须离线且消息要带 ID 才能验证 RemoveMessage，预算配置需保持彼此合法。
 """统一 Context Manager 测试，不调用在线模型。"""
 
 import unittest

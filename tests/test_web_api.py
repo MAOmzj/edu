@@ -1,3 +1,6 @@
+# 文件用途：验证首页、健康检查、普通问答、最终答案流和历史 API 的 HTTP 合同。
+# 调用关系：unittest/TestClient 调用 app.py；本文件用假 Runtime/Agent 隔离在线模型。
+# 修改易踩坑：导入 app 前要设置测试环境，流事件只能断言公开数据，不能泄露内部 Agent 状态。
 import os
 import json
 import tempfile

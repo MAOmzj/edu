@@ -1,3 +1,8 @@
+/*
+ * 文件用途：定义小学知识助手的响应式布局、颜色、聊天气泡、侧栏和加载状态。
+ * 调用关系：index.html加载本文件；选择器对应HTML结构及app.js动态添加的class。
+ * 修改易踩坑：@import必须仍位于所有样式规则之前，改class时同步HTML/JS，并检查手机窄屏布局。
+ */
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=ZCOOL+KuaiLe&display=swap");
 
 :root {

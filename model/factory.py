@@ -1,3 +1,6 @@
+# 文件用途：集中创建 DeepSeek 官方聊天模型、百炼 text-embedding-v4 或本地备用 Embedding。
+# 调用关系：education_agent.py 和 vector_store.py 调用本文件；本文件调用 LangChain 客户端和 local_embeddings.py。
+# 修改易踩坑：聊天与向量密钥不能混用，建库和查询必须使用同一 Embedding 模型与维度。
 """DeepSeek 聊天模型与可切换的在线/本地 Embedding 工厂。
 
 “工厂”就是集中创建对象的函数。本项目故意分开两个供应商：

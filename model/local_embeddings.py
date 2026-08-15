@@ -1,3 +1,6 @@
+# 文件用途：提供无需网络的确定性中文特征哈希 Embedding，作为在线向量模型的备用方案。
+# 调用关系：model/factory.py 创建本对象，向量后端调用 embed_documents/embed_query。
+# 修改易踩坑：文档和查询算法必须完全一致；改变维度或算法后必须重建全部知识索引。
 """无需账号和网络下载的本地中文特征哈希 Embedding。"""
 
 from __future__ import annotations
@@ -54,4 +57,3 @@ class LocalHashEmbeddings(Embeddings):
         """使用和知识文本相同的算法生成查询向量。"""
 
         return self._embed(text)
-

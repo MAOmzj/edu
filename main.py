@@ -1,21 +1,46 @@
+# 文件用途：提供终端问答、同步索引、重建索引和显示状态等命令行入口。
+# 调用关系：用户通过 python main.py 调用本文件；本文件调用 EducationRuntime 和 EducationQAService。
+# 修改易踩坑：重建索引会改持久数据，命令参数要互斥；退出时必须关闭 SQLite 连接。
 """小学教育知识问答系统命令行入口。
 
 这个文件和 app.py 是两个不同入口：app.py 给网页使用，main.py 给终端使用。
 两者最终都会调用同一个 EducationAgent，因此回答、记忆和审核逻辑不会出现两套。
 
 main() 的四个分支按优先级依次是：查看索引、同步/重建索引、单次提问、连续提问。
+python -m uvicorn app:app --host 127.0.0.1 --port 8766
+python main.py --question "1/2 + 1/3 等于多少？" --subject 数学 --grade 5
+python main.py --subject 综合 --grade 5 
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import asdict
 from uuid import uuid4
 
 from memory.runtime import EducationRuntime
 from rag.vector_store import EducationVectorStore
 from utils.config_handler import app_conf
+
+
+def _configure_console_encoding() -> None:
+    """把标准输出切到 UTF-8，避免 Windows GBK 终端无法打印中文与数学符号。
+
+    Web 服务走 UTF-8 JSON 不受影响；这个函数只修复命令行入口。reconfigure
+    失败或流不存在时静默跳过，不阻断索引管理、状态查询等纯逻辑命令。
+    """
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            current_encoding = str(getattr(stream, "encoding", "") or "").lower()
+            if current_encoding and current_encoding not in {"utf-8", "utf8"}:
+                stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError):
+            pass
+
+
+_configure_console_encoding()
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -1,3 +1,6 @@
+# 文件用途：按学科读取、校验并缓存项目维护的教育 Skill。
+# 调用关系：context_manager.py 调用本文件；本文件读取 config/app.yml 和 skills/*/SKILL.md。
+# 修改易踩坑：必须限制路径在 skills 目录内并保留 frontmatter 校验，缓存意味着改 Skill 后要重启。
 """读取项目内教育 Skill，并按学科提供给学科问答 Agent。"""
 
 from __future__ import annotations
@@ -15,6 +18,10 @@ from utils.path_tool import PROJECT_ROOT, get_abs_path
 
 FRONTMATTER_PATTERN = re.compile(
     r"\A---\s*\r?\n(.*?)\r?\n---\s*\r?\n(.*)\Z",
+    re.DOTALL,
+)
+FILE_GUIDE_PATTERN = re.compile(
+    r"\A\s*<!--\s*文件用途：.*?-->\s*",
     re.DOTALL,
 )
 
@@ -68,7 +75,12 @@ def _load_skill_file(configured_path: str, max_chars: int) -> EducationSkill:
         raise ValueError(f"教育 Skill frontmatter 必须是对象：{path}")
     name = str(metadata.get("name", "")).strip()
     description = str(metadata.get("description", "")).strip()
-    instructions = matched.group(2).strip()
+    # SKILL.md 文件头只帮助开发者理解调用关系，不能当成教学指令发给模型。
+    instructions = FILE_GUIDE_PATTERN.sub(
+        "",
+        matched.group(2),
+        count=1,
+    ).strip()
     if not name or not description or not instructions:
         raise ValueError(f"教育 Skill 的名称、描述和正文不能为空：{path}")
     if len(instructions) > max_chars:

@@ -1,3 +1,6 @@
+# 文件用途：为支持Skill元数据的客户端提供小学数学Skill的展示名称、简介和默认提示。
+# 调用关系：Skill客户端/安装器读取本文件；项目运行时的agent/skill_loader.py不依赖它。
+# 修改易踩坑：这不是模型运行配置，字段名必须符合Skill元数据格式，不能在此放API Key。
 interface:
   display_name: "小学数学教学"
   short_description: "按年级讲解小学数学题，并系统核对算式、步骤、答案与单位"

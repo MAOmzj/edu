@@ -1,3 +1,6 @@
+# 文件用途：配置应用名称、学科、Agent重试、教育Skill、上下文摘要、联网和长期记忆。
+# 调用关系：utils/config_handler.py 加载本文件；Agent、Context Manager、Web和存储模块读取对应字段。
+# 修改易踩坑：新增字段要同步 config_handler 校验；摘要保留数必须小于触发数，学科名要全项目一致。
 name: 小学知识小助手
 supported_subjects:
   - 语文

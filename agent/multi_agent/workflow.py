@@ -1,3 +1,21 @@
+# 文件用途：用 LangGraph 固定协调上下文准备、学科回答、审核重试、记忆提取和最终保存。
+#
+# 调用关系：（谁调用我，上游）
+#   - agent/education_agent.py:63  创建：EducationMultiAgentWorkflow(...)（传三个子 Agent Tool）
+#   - agent/education_agent.py:153 调用：self.workflow.invoke(state, config)
+#   - tests/test_multi_agent.py    测试：直接构造 workflow 或通过 EducationAgent 调用
+#
+# 调用关系：（我调用谁，下游）
+#   - agent/context_manager.py     EducationContextManager：压缩/收集/拼消息（见各节点行内注释）
+#   - agent/multi_agent/subject_agent.py  subject_tool：学科 Agent 写草稿（inject）
+#   - agent/multi_agent/review_agent.py   review_tool：审核 Agent 核查草稿
+#   - agent/multi_agent/memory_agent.py   memory_tool：记忆 Agent 提候选
+#   - memory/store.py             EducationMemoryStore.record_turn()：落库
+#   - agent/multi_agent/state.py  EducationWorkflowState/ReviewResult/MemoryExtraction
+#   - utils/logger_handler.py     logger：异常日志
+#   - langgraph 框架               StateGraph/add_node/add_edge/compile（图本身）
+#
+# 修改易踩坑：RemoveMessage 只能删除已有 ID，审核重试必须有上限，只有最终答案可以追加到主 messages。
 """主协调工作流：按固定顺序调用三个“子 Agent Tool”。
 
 给初学者的流程图：
@@ -68,6 +86,7 @@ class EducationMultiAgentWorkflow:
         self.memory_tool = memory_tool
         self.memory_store = memory_store
         self.max_review_retries = max(0, max_review_retries)
+        # 调用下游：agent/context_manager.py 的 EducationContextManager（上下文大脑）。
         self.context_manager = EducationContextManager(
             memory_store,
             limit=retrieval_limit,
@@ -119,10 +138,12 @@ class EducationMultiAgentWorkflow:
     def _prepare_context(self, state: EducationWorkflowState) -> dict[str, Any]:
         """让统一 Context Manager 准备本轮所需的全部学科问答上下文。"""
 
+        # 调用下游：context_manager.compact_conversation() 压缩长会话（判断要不要摘要）。
         compaction = self.context_manager.compact_conversation(
             messages=list(state.get("messages", [])),
             previous_summary=state.get("conversation_summary", ""),
         )
+        # 调用下游：context_manager.build_context_bundle() 收集摘要/最近聊天/长期记忆/Skill。
         context_bundle = self.context_manager.build_context_bundle(
             student_id=state["student_id"],
             question=state["question"],
@@ -176,10 +197,12 @@ class EducationMultiAgentWorkflow:
                 "skill_context", "本轮没有额外教育 Skill。"
             ),
         )
+        # 调用下游：context_manager.build_subject_user_message() 拼完整消息（当前问题在最后）。
         context_message = self.context_manager.build_subject_user_message(
             context_bundle,
             review_feedback=state.get("review_feedback", ""),
         )
+        # 调用下游：subject_agent.py 的学科子 Agent Tool（写草稿，内部自己调知识库/计算器）。
         draft = self.subject_tool.invoke(
             {"context_message": context_message}
         )
@@ -192,6 +215,7 @@ class EducationMultiAgentWorkflow:
         """调用审核子 Agent Tool，并把固定 JSON 结果写回共享 State。"""
 
         attempt = int(state.get("review_attempts", 0)) + 1
+        # 调用下游：review_agent.py 的审核子 Agent Tool（独立核查草稿，返回固定JSON）。
         raw_result = self.review_tool.invoke(
             {
                 "question": state["question"],
@@ -249,6 +273,7 @@ class EducationMultiAgentWorkflow:
 
         candidates: list[dict[str, Any]] = []
         try:
+            # 调用下游：memory_agent.py 的记忆子 Agent Tool（提长期记忆候选JSON）。
             raw_result = self.memory_tool.invoke(
                 {
                     "question": state["question"],
@@ -268,6 +293,7 @@ class EducationMultiAgentWorkflow:
             # 记忆提取是增强功能。即使它暂时失败，也不能吞掉已经审核通过的答案。
             logger.exception("学习记忆 Agent 执行失败，改用规则提取长期记忆")
 
+        # 调用下游：memory/store.py 的 record_turn()（落库：会话+消息+长期记忆）。
         if self.memory_store is not None:
             self.memory_store.record_turn(
                 student_id=state["student_id"],
@@ -294,4 +320,5 @@ class EducationMultiAgentWorkflow:
     ) -> EducationWorkflowState:
         """使用给定初始 State 和线程配置执行一次完整多 Agent 问答。"""
 
+        # 调用下游：LangGraph 框架的 CompiledStateGraph.invoke()（跑完整张图）。
         return self.graph.invoke(state, config=config)

@@ -1,3 +1,19 @@
+# 文件用途：定义多 Agent 共享 State、审核结果和长期记忆候选的数据结构。
+#
+# 调用关系：（谁调用我，上游）
+#   - workflow.py:33          导入 EducationWorkflowState/MemoryExtraction/ReviewResult
+#   - workflow.py:94          StateGraph(EducationWorkflowState)：声明图的共享字典结构
+#   - workflow.py 各节点      节点函数参数 state（框架自动注入）
+#   - subject_agent.py:20     final_ai_text（捞答案）
+#   - review_agent.py:15      ReviewResult/final_ai_text/parse_json_model
+#   - memory_agent.py:15      MemoryExtraction/final_ai_text/parse_json_model
+#   - education_agent.py:29   message_content_to_text
+#
+# 调用关系：（我调用谁，下游）
+#   本文件是"图纸+工具"，只依赖 langchain_core 和 pydantic 基础类型，
+#   不调用项目内任何其他文件。
+#
+# 修改易踩坑：messages 必须保留 add_messages reducer；字段改名会影响 Checkpoint 恢复和所有工作流节点。
 """多 Agent 共用的数据结构。
 
 可以把 State 理解为三个子 Agent 之间传递的“工作单”：学科 Agent 写草稿，
@@ -22,6 +38,7 @@ MemoryType = Literal[
 ModelType = TypeVar("ModelType", bound=BaseModel)
 
 
+# 被 workflow.py:94 之后使用：审核 Tool 返回的 JSON 由 ReviewResult 校验。
 class ReviewResult(BaseModel):
     """审核 Agent 必须返回的固定格式，避免用字符串猜测是否通过。"""
 
@@ -43,12 +60,14 @@ class MemoryCandidate(BaseModel):
     confidence: float = Field(ge=0, le=1, description="提取结果的可信程度")
 
 
+# 被 workflow.py 的 _save_learning_memory 使用：记忆 Tool 返回的 JSON 由 MemoryExtraction 校验。
 class MemoryExtraction(BaseModel):
     """记忆 Agent 的完整输出；每轮最多保存五条候选记忆。"""
 
     memories: list[MemoryCandidate] = Field(default_factory=list, max_length=5)
 
 #定义state
+# 被 workflow.py:94 的 StateGraph(EducationWorkflowState) 用作共享字典的“图纸”。
 class EducationWorkflowState(TypedDict, total=False):
     """主协调工作流使用的共享 State。
 
@@ -87,6 +106,7 @@ class EducationWorkflowState(TypedDict, total=False):
     memory_candidates: list[dict[str, Any]]
 
 
+# 上游调用者：education_agent.py:29 的 _content_to_text() 和三个子 Agent 共用。
 def message_content_to_text(content: Any) -> str:
     """把模型的字符串或文本内容块统一转换成普通字符串。"""
 
@@ -103,6 +123,7 @@ def message_content_to_text(content: Any) -> str:
     return str(content).strip()
 
 
+# 上游调用者：subject_agent.py:20、review_agent.py:15、memory_agent.py:15（捞最终文本）。
 def final_ai_text(result: dict[str, Any]) -> str:
     """从 Agent 运行结果中找到最后一条不是工具调用的 AI 正文。"""
 
@@ -114,9 +135,10 @@ def final_ai_text(result: dict[str, Any]) -> str:
     raise RuntimeError("子 Agent 没有返回最终文本")
 
 
+# 上游调用者：review_agent.py:15、memory_agent.py:15（把模型 JSON 变成校验过的对象）。
 def parse_json_model(text: str, model_type: type[ModelType]) -> ModelType:
     """从纯 JSON 或 Markdown JSON 代码块中解析并校验 Pydantic 对象。
-        
+
     """
     #把模型吐出来的文本 一步步收拾成干净的JSON？  
     cleaned = text.strip()

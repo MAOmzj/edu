@@ -1,3 +1,6 @@
+# 文件用途：离线验证 DeepSeek/百炼配置边界和本地 Embedding 的一致性。
+# 调用关系：unittest 调用本文件；本文件调用 model/factory.py 与 local_embeddings.py。
+# 修改易踩坑：测试不能发真实网络请求，也不能依赖开发者机器上已有的 API Key。
 """DeepSeek 模型配置和本地 Embedding 的离线测试。"""
 
 import math

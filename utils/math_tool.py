@@ -1,3 +1,6 @@
+# 文件用途：使用 AST 白名单安全计算基础算术表达式，替代 eval/exec。
+# 调用关系：education_tools.py 调用 safe_calculate；本文件只调用 Python 标准库。
+# 修改易踩坑：新增运算符必须同时限制指数、长度和数值范围，绝不能退回 eval 或 exec。
 """不使用 eval 的基础算术表达式计算器。"""
 
 import ast

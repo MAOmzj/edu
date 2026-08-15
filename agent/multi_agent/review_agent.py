@@ -1,3 +1,6 @@
+# 文件用途：审核学科答案的正确性、适龄性与安全性，并给出结构化修改意见。
+# 调用关系：education_agent.py 创建本 Tool，workflow.py 在学科 Agent 后调用；它可按配置使用联网核查。
+# 修改易踩坑：审核结果必须符合 ReviewResult，不能把审核 Agent 的内部文本直接交给学生。
 """审核/反思子 Agent，并将审核能力包装成 Tool。
 
 审核 Agent 不直接回答学生，只读取“原问题 + 学科 Agent 草稿”，输出固定 JSON。

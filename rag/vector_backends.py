@@ -1,3 +1,6 @@
+# 文件用途：实现可切换的 SQLite 与 Chroma 向量后端，以及统一的增删查接口。
+# 调用关系：vector_store.py 选择并调用本文件；本文件调用 Embedding 与 hybrid_search.py。
+# 修改易踩坑：两个后端必须返回相同语义的结果；批量写入、向量维度和 Chroma 原生崩溃风险要重点测试。
 """可以互相切换的 SQLite 与 Chroma 向量存储后端。
 
 上层 EducationVectorStore 只依赖 VectorBackend 规定的四个操作，所以配置从

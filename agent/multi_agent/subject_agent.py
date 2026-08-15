@@ -1,3 +1,6 @@
+# 文件用途：创建会检索、计算、按需联网的学科问答 Agent，并把它包装成 Tool。
+# 调用关系：education_agent.py 创建本 Tool，workflow.py 传入 Context Manager 生成的 context_message。
+# 修改易踩坑：不要在这里重新拼上下文或挂第二个 Checkpointer，工具内部消息不能污染主会话 State。
 """学科问答子 Agent，并将它包装成主工作流可以调用的 Tool。
 
 这里有两层容易混淆：

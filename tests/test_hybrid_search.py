@@ -1,3 +1,6 @@
+# 文件用途：验证中文分词、BM25、余弦融合和 SQLite 后端最终排序。
+# 调用关系：unittest 调用本文件；本文件调用 rag/hybrid_search.py 与向量后端。
+# 修改易踩坑：断言应验证相对排序而非脆弱的小数细节，临时数据库必须彼此隔离。
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory

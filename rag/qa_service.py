@@ -1,3 +1,6 @@
+# 文件用途：提供知识库检索文本和可选的直接 RAG 问答链，统一面向教育工具与 CLI。
+# 调用关系：education_tools.py、web_search.py 和 main.py 调用本服务；本文件调用 vector_store 和 Prompt Loader。
+# 修改易踩坑：主多 Agent 流程主要用 search_context，不要把直接 RAG 链误当成主 Agent 或重复保存会话。
 """面向小学生的知识检索与直接 RAG 问答服务。
 
 当前多 Agent 主流程主要调用 search_context()，把它作为 search_knowledge Tool。

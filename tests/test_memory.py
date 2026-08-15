@@ -1,3 +1,6 @@
+# 文件用途：验证业务历史、长期记忆、隐私脱敏以及 SQLite Checkpointer 跨连接恢复。
+# 调用关系：unittest 调用本文件；本文件调用 memory/store.py 和 LangGraph SqliteSaver。
+# 修改易踩坑：每个测试必须使用独立临时库并关闭连接，不能误删真实 storage 数据。
 import sqlite3
 import tempfile
 import unittest

@@ -1,3 +1,6 @@
+# 文件用途：向学科 Agent 暴露本地知识检索和安全算术计算两个 LangChain Tool。
+# 调用关系：subject_agent.py 注册这些工具；本文件调用 rag/qa_service.py 和 utils/math_tool.py。
+# 修改易踩坑：Tool 参数会暴露给模型，不能加入 student_id、历史或长期记忆等隐私字段。
 """教育 Agent 可调用的工具。
 
 @tool 会读取函数名、参数类型和文档字符串，生成模型能理解的工具说明。

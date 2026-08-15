@@ -1,3 +1,6 @@
+# 文件用途：配置知识目录、切分参数、SQLite/Chroma后端、Embedding批次和BM25混合权重。
+# 调用关系：config_handler.py 加载本文件；vector_store.py 和 vector_backends.py 使用这些参数。
+# 修改易踩坑：切分、模型、维度或后端路径变化后要重建索引；BM25与向量权重之和应保持合理。
 collection_name: primary_education
 
 # 修改这一项即可切换向量后端：sqlite 或 chroma。

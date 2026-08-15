@@ -1,3 +1,6 @@
+# 文件用途：读取并在启动阶段校验 model/knowledge/prompts/app 四份 YAML 配置。
+# 调用关系：几乎所有后端模块导入本文件的配置字典；本文件调用 path_tool 和 PyYAML。
+# 修改易踩坑：这里在导入时执行校验，新增必填项必须同步配置文件和测试，否则整个应用无法导入。
 """集中加载并校验 YAML 配置。"""
 
 from pathlib import Path

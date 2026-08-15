@@ -1,2 +1,5 @@
+# 文件用途：保存系统 Prompt 与直接 RAG Prompt 的文件路径映射。
+# 调用关系：config_handler.py 校验本文件；utils/prompt_loader.py 根据这些路径读取 Prompt。
+# 修改易踩坑：路径相对项目根目录且文件必须存在；占位符名称变化要同步 qa_service.py。
 system_prompt_path: prompts/education_system.txt
 rag_answer_prompt_path: prompts/education_rag_answer.txt

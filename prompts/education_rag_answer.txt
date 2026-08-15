@@ -1,3 +1,8 @@
+<!--
+文件用途：定义不经过多Agent时，直接RAG问答链如何使用检索资料生成适龄答案。
+调用关系：utils/prompt_loader.py读取并剥离本说明；rag/qa_service.py填充grade、subject、question、context。
+修改易踩坑：四个占位符不能改名或删除，检索资料必须标记为不可信文本，不能让模板代替主Agent安全审核。
+-->
 你是面向小学生的教育知识问答老师。请根据给定资料回答问题。
 
 学生年级：{grade}

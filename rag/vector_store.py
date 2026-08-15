@@ -1,3 +1,6 @@
+# 文件用途：发现知识文件、切分文档、增量建索引、维护清单并向上层提供检索。
+# 调用关系：qa_service.py 和 CLI 调用本文件；本文件调用 file_handler、model.factory 和 vector_backends。
+# 修改易踩坑：文件哈希清单必须与所选后端分开，切分参数或 Embedding 改变后必须重建索引。
 """教育知识库的增量索引和检索。
 
 这一层负责“知识文件”，vector_backends.py 负责“向量数据库”。主要流程：
