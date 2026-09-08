@@ -31,6 +31,9 @@ md5.text
 # 本地完整版开发文档（仅保留本地，不上传；GitHub 展示简化版 README.md）
 README_FULL.md
 
+# 本地文档目录，不提交到 Git
+/docs/
+
 # 编辑器与系统文件
 .vscode/
 .idea/

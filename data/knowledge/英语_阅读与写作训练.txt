@@ -1,0 +1,160 @@
+小学英语阅读与写作训练百科
+
+本资料面向小学四至六年级，系统整理英语阅读训练方法和写作训练范文。阅读是输入，写作是输出——通过大量阅读积累语言素材，通过仿写和创作提升表达能力。
+
+============================================================
+第一篇：阅读理解训练
+============================================================
+
+一、阅读题型训练
+
+【判断正误 T/F】
+解题步骤：
+1. 读题目，找出关键词（人名、地名、数字、动作）。
+2. 回到文中定位相关句子。
+3. 逐词对比——特别注意否定词、时态、单复数。
+
+例文：
+My name is Lily. I am ten years old. I am in Grade Four. I have a cat. It is white. I like it very much. My brother Tom has a dog. It is black.
+
+判断：
+1. Lily is nine years old. → F（文中是ten）
+2. Lily's cat is white. → T（文中是white）
+3. Tom has a cat. → F（Tom有dog不是cat）
+4. The dog is black. → T
+
+【选择题】
+例文：
+It is Sunday today. The weather is sunny and warm. The Smiths are going to the park. Mr. Smith is reading a book under a big tree. Mrs. Smith is taking photos. Their children, Jack and Mary, are playing with a ball. They are very happy.
+
+题目：What is Mrs. Smith doing?
+A. Reading a book.  B. Taking photos.  C. Playing with a ball.  D. Going to school.
+答案：B（回文定位"Mrs. Smith is taking photos"）
+
+【回答问题】
+答题要求：用完整句子回答，注意时态和人称转换。
+文中问：Where does Tom live?
+原文：Tom lives in Beijing.
+答案：Tom lives in Beijing.（不用 I live in Beijing.）
+
+【填空题】
+注意根据上下文确定单词的形式（时态、单复数、大小写）。
+
+二、阅读短文分类训练
+
+【自我介绍类】
+Hello! I'm Wang Lin. I'm eleven years old. I'm a student in Grade Five. I go to school by bike. I have four classes in the morning and two in the afternoon. My favourite subject is English. I like reading English stories. After school, I often play football with my friends. On weekends, I usually visit my grandparents.
+
+练习要点：
+1. How old is Wang Lin? → He is eleven.
+2. How does he go to school? → By bike.
+3. What's his favourite subject? → English.
+4. What does he do on weekends? → He usually visits his grandparents.
+
+【日记类】
+Sunday, March 10th, Sunny
+Today is my mother's birthday. I got up early in the morning. I made a card for my mother. I drew some flowers on it and wrote "Happy Birthday, Mum!" In the afternoon, I went to the supermarket with my father. We bought a big cake and some fruit. In the evening, we had a birthday party at home. My mother was very happy. I was happy, too.
+
+练习要点：
+1. What day is it today? → It's Sunday.
+2. What's the weather like? → It's sunny.
+3. Whose birthday is it? → The writer's mother's birthday.
+4. What did the writer do in the morning? → He/She made a card for his/her mother.
+
+【故事类】
+One day, a little ant went to the river to drink water. He fell into the water and cried for help. A dove saw him and dropped a leaf into the water. The ant climbed onto the leaf and was saved. A few days later, the ant saw a hunter aiming at the dove. The ant quickly bit the hunter's foot. The hunter cried out and missed the shot. The dove flew away safely.
+
+练习要点：
+1. What happened to the ant? → He fell into the river.
+2. How did the dove help the ant? → She dropped a leaf into the water.
+3. How did the ant help the dove? → He bit the hunter's foot.
+4. What can we learn from the story? → Friends should help each other.
+
+============================================================
+第二篇：写作训练
+============================================================
+
+三、写作基础训练
+
+【从句子到段落】
+第一步：写好每个句子（主谓完整，时态正确）。
+第二步：用连接词把句子连成段落（and, but, because, then, first, next, finally）。
+第三步：加上开头句（主题句）和结尾句（总结句）。
+
+例：写"我的宠物"
+开头句：I have a lovely pet cat.
+支撑句：Its name is Mimi. It is white and soft. It likes eating fish. It often plays with a ball. I play with it every day after school.
+结尾句：I love Mimi very much. It is my best friend.
+
+四、分类写作训练
+
+【写人类】
+模板：
+开头：介绍人物（名字、年龄、关系）。
+中间：外貌（1-2句）+ 性格/爱好（2-3句）+ 具体事例（1-2句）。
+结尾：表达感情。
+
+范文：My English Teacher
+My English teacher is Miss Li. She is about thirty years old. She is tall and thin. She has long black hair and big eyes. She always smiles.
+Miss Li is very kind and patient. She speaks English very well. Her classes are interesting. She often plays games with us. When we don't understand, she explains again and again.
+I like Miss Li very much. She is not only our teacher but also our friend.
+
+【记事类】
+模板：
+开头：时间+地点+人物+事件（一句话概括）。
+中间：起因→经过（重点详写）→结果。
+结尾：感受/道理。
+
+范文：A Happy Day
+Last Saturday was a sunny day. My family went to the zoo.
+We saw many animals there. The monkeys were very clever. They jumped up and down. I gave them some bananas. The elephants were big and strong. They used their long noses to take water and spray it. My little sister was very excited. She laughed and clapped her hands. We also saw tigers, lions, pandas and giraffes.
+We had a picnic near the lake. The food was delicious. We took many photos.
+What a happy day! I hope we can go to the zoo again.
+
+【写景类】
+模板：
+开头：什么时间去了什么地方，总体印象。
+中间：按顺序描写（从远到近/从整体到局部），运用多种感官，使用比喻拟人。
+结尾：表达感情。
+
+范文：My School
+My school is beautiful. It is big and clean.
+When you walk into the school gate, you can see a tall teaching building. There are twenty classrooms in it. In front of the building, there is a beautiful garden with many flowers. They are red, yellow, pink and purple. Behind the building, there is a large playground. We play football and run there after class.
+There are many tall trees around the school. In spring, the trees turn green. Birds sing in the trees. In autumn, the leaves turn yellow and fall down like butterflies.
+I love my school. It is like a big garden.
+
+【书信类】
+格式：
+Dear ___,
+    [开头问候]
+    [正文：写2-3段]
+    [结尾祝福]
+                        Yours/Your friend,
+                        [署名]
+
+范文：
+Dear Tom,
+    How are you? I haven't seen you for a long time. I miss you very much.
+    Let me tell you about my new school. It is big and beautiful. I have many new friends. My favourite subject is science because it is very interesting. We do experiments in class. Last week, we made a volcano with baking soda and vinegar. It was amazing!
+    What about you? How is your new school? Please write to me soon.
+    Best wishes!
+                                    Yours,
+                                    Li Hua
+
+五、写作提升技巧
+
+【好词好句积累】
+外貌描写：big eyes, long hair, tall and thin, a warm smile
+动作描写：run quickly, jump happily, walk slowly, hold tightly
+心情描写：I was very happy. I felt excited. I was so surprised. Tears came to my eyes.
+过渡句：First... Next... Then... Finally... / On the one hand... On the other hand...
+结尾句：I will never forget this day. / What a wonderful experience! / I hope...
+
+【避免常见错误】
+1. 时态不一致：记叙过去的事全用过去时。
+2. 主谓不一致：He likes（不是 like）。They are（不是 is）。
+3. 单复数错误：two books（不是 book）。some water（不是 waters）。
+4. 中式英语：I very like it（错）→ I like it very much（对）。
+5. 大小写和标点：句首大写，专有名词大写。英文句号是. 不是。
+
+阅读和写作就像呼吸——吸入（阅读）和呼出（写作）同样重要。每天读一篇英语短文，每周写一篇小作文，坚持不懈，你的英语一定会越来越好。记住：不怕写得不好，就怕不敢动笔。

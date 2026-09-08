@@ -1,0 +1,29 @@
+# 文件用途：将 Chroma 作为独立进程运行，并用命名卷持久化向量数据。
+# 调用关系：README 中的 docker compose 命令启动本文件；应用通过 127.0.0.1:8000 访问。
+# 修改易踩坑：镜像版本必须与 requirements.txt 的 chromadb 客户端一致，不能暴露到公网。
+services:
+  chroma:
+    image: chromadb/chroma:1.5.8
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${CHROMA_PORT:-8000}:8000"
+    environment:
+      CONFIG_PATH: /config.yaml
+    volumes:
+      - chroma_data:/data
+      - ./config.yaml:/config.yaml:ro
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8000/api/v2/heartbeat', timeout=2).read()
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  chroma_data:

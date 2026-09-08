@@ -194,6 +194,7 @@ class EducationContextManager:
         messages: Sequence[BaseMessage],
         *,
         max_chars: int | None = None,
+        message_limit: int | None = None,
     ) -> str:
         """优先保留最近消息，并在字符预算内整理成学生/助手对话。"""
 
@@ -202,9 +203,14 @@ class EducationContextManager:
 
         # 从最新消息向前装入预算，空间不足时丢弃更旧内容而不是丢掉最新一轮。
         char_budget = int(max_chars or self.max_conversation_chars)
+        selected_limit = (
+            self.recent_message_limit
+            if message_limit is None
+            else max(1, int(message_limit))
+        )
         newest_first: list[str] = []
         used_chars = 0
-        for message in reversed(list(messages)[-self.recent_message_limit :]):
+        for message in reversed(list(messages)[-selected_limit:]):
             role = "小助手" if isinstance(message, AIMessage) else "学生"
             text = self._message_content_to_text(message.content)
             if not text:
@@ -254,6 +260,9 @@ class EducationContextManager:
         older_context = self.format_conversation_context(
             older_messages,
             max_chars=max(self.summary_trigger_chars * 2, self.max_summary_chars),
+            # 摘要阶段必须处理本次全部待移除消息；recent_message_limit 只限制
+            # 普通 Prompt 的最近原文，不能让最早消息在进入摘要前直接丢失。
+            message_limit=len(older_messages),
         )
         safe_previous = self._truncate_prefix(
             previous_summary or "无",

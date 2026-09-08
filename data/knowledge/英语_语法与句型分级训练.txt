@@ -1,0 +1,417 @@
+# 小学英语语法与句型分级训练
+
+## 第一篇：低年级语法训练（1-2年级）
+
+### 一、be动词（am/is/are）
+
+#### 1. 基本用法
+- I am... 我是……
+- You are... 你是……
+- He/She/It is... 他/她/它是……
+
+#### 2. 练习
+填空：
+1. I ___ a student. (am)
+2. You ___ my friend. (are)
+3. He ___ a boy. (is)
+4. She ___ a girl. (is)
+5. It ___ a cat. (is)
+6. We ___ classmates. (are)
+7. They ___ happy. (are)
+
+### 二、人称代词
+
+#### 1. 主格形式
+- I我 you你 he他 she她 it它 we我们 they他们
+
+#### 2. 练习
+选择正确的代词：
+1. ___ am a teacher. (I)
+2. ___ are a student. (You)
+3. ___ is my father. (He)
+4. ___ is my mother. (She)
+5. ___ is a dog. (It)
+6. ___ are friends. (We)
+7. ___ are in the classroom. (They)
+
+### 三、简单疑问句
+
+#### 1. Be动词疑问句
+- Am I...? 我是……吗？
+- Are you...? 你是……吗？
+- Is he/she/it...? 他/她/它是……吗？
+
+#### 2. 回答
+- Yes, I am. / No, I'm not.
+- Yes, you are. / No, you aren't.
+- Yes, he/she/it is. / No, he/she/it isn't.
+
+#### 3. 练习
+问句和回答配对：
+1. Are you a student? → Yes, I am.
+2. Is she your mother? → Yes, she is.
+3. Is it a cat? → No, it isn't.
+4. Are they happy? → Yes, they are.
+
+### 四、名词复数
+
+#### 1. 规则变化
+- 一般加-s：book→books, pen→pens
+- 以s, x, ch, sh结尾加-es：bus→buses, box→boxes
+
+#### 2. 练习
+写出复数形式：
+1. cat → cats
+2. dog → dogs
+3. book → books
+4. pen → pens
+5. bus → buses
+6. box → boxes
+
+### 五、简单句型
+
+#### 1. This is...
+- This is a book. 这是一本书。
+- This is my friend. 这是我的朋友。
+
+#### 2. I have...
+- I have a book. 我有一本书。
+- I have a pen. 我有一支笔。
+
+#### 3. 练习
+造句：
+1. This is ___. (a cat/a dog/a book)
+2. I have ___. (a pen/a pencil/a ruler)
+3. This is my ___. (friend/teacher/mother)
+
+## 第二篇：中年级语法训练（3-4年级）
+
+### 一、一般现在时
+
+#### 1. 用法
+- 表示经常性、习惯性的动作
+- 表示客观事实
+
+#### 2. 构成
+- 肯定句：主语 + 动词原形/三单
+- 否定句：主语 + don't/doesn't + 动词原形
+- 疑问句：Do/Does + 主语 + 动词原形？
+
+#### 3. 第三人称单数
+- 一般加-s：play→plays, read→reads
+- 以s, x, ch, sh, o结尾加-es：watch→watches, go→goes
+- 辅音字母+y结尾，变y为i加-es：study→studies
+
+#### 4. 练习
+填空：
+1. I ___ to school every day. (go)
+2. He ___ football every weekend. (plays)
+3. She ___ English very well. (speaks)
+4. They ___ to the park on Sundays. (go)
+5. We ___ breakfast at 7 o'clock. (have)
+
+变成否定句：
+1. I go to school by bus. → I don't go to school by bus.
+2. He plays football. → He doesn't play football.
+3. She speaks English. → She doesn't speak English.
+
+变成疑问句：
+1. You like apples. → Do you like apples?
+2. He likes apples. → Does he like apples?
+3. They go to school. → Do they go to school?
+
+### 二、现在进行时
+
+#### 1. 用法
+- 表示此刻正在发生的动作
+
+#### 2. 构成
+- 肯定句：主语 + am/is/are + 动词ing
+- 否定句：主语 + am/is/are + not + 动词ing
+- 疑问句：Am/Is/Are + 主语 + 动词ing？
+
+#### 3. 动词ing形式
+- 一般直接加-ing：play→playing, read→reading
+- 以不发音e结尾，去e加-ing：make→making, write→writing
+- 重读闭音节，双写末尾辅音字母加-ing：run→running, swim→swimming
+
+#### 4. 练习
+填空：
+1. I ___ (read) a book now. → am reading
+2. He ___ (play) football now. → is playing
+3. They ___ (watch) TV now. → are watching
+4. She ___ (write) a letter now. → is writing
+5. We ___ (have) lunch now. → are having
+
+### 三、一般过去时
+
+#### 1. 用法
+- 表示过去发生的动作
+
+#### 2. 构成
+- 肯定句：主语 + 动词过去式
+- 否定句：主语 + didn't + 动词原形
+- 疑问句：Did + 主语 + 动词原形？
+
+#### 3. 规则动词过去式
+- 一般加-ed：play→played, read→read
+- 以e结尾加-d：like→liked, live→lived
+- 辅音字母+y结尾，变y为i加-ed：study→studied
+- 重读闭音节，双写末尾辅音字母加-ed：stop→stopped
+
+#### 4. 不规则动词过去式（常用）
+- am/is→was, are→were
+- go→went, have→had, do→did
+- eat→ate, drink→drank, see→saw
+- come→came, take→took, give→gave
+- get→got, make→made, say→said
+- tell→told, know→knew, think→thought
+
+#### 5. 练习
+填空：
+1. I ___ (go) to the park yesterday. → went
+2. He ___ (play) football last weekend. → played
+3. She ___ (read) a book last night. → read
+4. They ___ (watch) TV yesterday evening. → watched
+5. We ___ (have) a party last week. → had
+
+### 四、一般将来时
+
+#### 1. 用法
+- 表示将来要发生的动作
+
+#### 2. 构成
+**will结构**：
+- 肯定句：主语 + will + 动词原形
+- 否定句：主语 + won't + 动词原形
+- 疑问句：Will + 主语 + 动词原形？
+
+**be going to结构**：
+- 肯定句：主语 + am/is/are going to + 动词原形
+- 否定句：主语 + am/is/are + not going to + 动词原形
+- 疑问句：Am/Is/Are + 主语 + going to + 动词原形？
+
+#### 3. 练习
+填空：
+1. I ___ (go) to Beijing tomorrow. → will go / am going to go
+2. He ___ (play) football this afternoon. → will play / is going to play
+3. They ___ (visit) the museum next week. → will visit / are going to visit
+4. She ___ (see) a movie tonight. → will see / is going to see
+5. We ___ (have) a party next Saturday. → will have / are going to have
+
+### 五、情态动词
+
+#### 1. can
+- 表示能力：I can swim. 我会游泳。
+- 表示许可：Can I use your pen? 我可以用你的笔吗？
+
+#### 2. should
+- 表示建议：You should study hard. 你应该努力学习。
+
+#### 3. must
+- 表示必须：You must finish your homework. 你必须完成作业。
+
+#### 4. 练习
+填空：
+1. I ___ swim very well. (can)
+2. You ___ see a doctor. (should)
+3. You ___ wear a uniform at school. (must)
+4. ___ I borrow your book? (Can)
+5. We ___ help each other. (should)
+
+## 第三篇：高年级语法训练（5-6年级）
+
+### 一、形容词比较级和最高级
+
+#### 1. 比较级
+- 构成：形容词 + -er 或 more + 形容词
+- 用法：A + be + 比较级 + than + B
+
+#### 2. 最高级
+- 构成：the + 形容词 + -est 或 the most + 形容词
+- 用法：A + be + the + 最高级 + in/of...
+
+#### 3. 规则变化
+- 单音节词加-er/-est：tall→taller→tallest
+- 以e结尾加-r/-st：large→larger→largest
+- 辅音字母+y结尾，变y为i加-er/-est：happy→happier→happiest
+- 多音节词前加more/most：beautiful→more beautiful→most beautiful
+
+#### 4. 不规则变化
+- good/well→better→best
+- bad/badly→worse→worst
+- many/much→more→most
+- little→less→least
+
+#### 5. 练习
+填空：
+1. Tom is ___ (tall) than Jerry. → taller
+2. This book is ___ (interesting) than that one. → more interesting
+3. She is the ___ (beautiful) girl in our class. → most beautiful
+4. He runs ___ (fast) than me. → faster
+5. This is the ___ (good) movie I've ever seen. → best
+
+### 二、定语从句
+
+#### 1. 关系代词
+- who：指人，作主语或宾语
+- which：指物，作主语或宾语
+- that：指人或物，作主语或宾语
+- whose：指人或物，作定语
+
+#### 2. 用法
+- The boy who is playing football is my brother.
+- The book which I bought yesterday is very interesting.
+- The girl that I met yesterday is very nice.
+
+#### 3. 练习
+填空：
+1. The boy ___ is wearing a red hat is my friend. (who/that)
+2. The book ___ I read last night was very interesting. (which/that)
+3. The girl ___ mother is a teacher is my classmate. (whose)
+4. The car ___ he bought is very expensive. (which/that)
+5. The man ___ lives next door is very friendly. (who/that)
+
+### 三、状语从句
+
+#### 1. 时间状语从句
+- when：当……时候
+- while：在……期间
+- before：在……之前
+- after：在……之后
+- until/till：直到……
+
+#### 2. 条件状语从句
+- if：如果
+
+#### 3. 原因状语从句
+- because：因为
+- since：既然
+- as：由于
+
+#### 4. 练习
+填空：
+1. I was doing my homework ___ my mother came home. (when)
+2. ___ it rains tomorrow, we will stay at home. (If)
+3. I didn't go to school ___ I was ill. (because)
+4. He waited ___ the bus came. (until)
+5. ___ you are tired, you should have a rest. (If/Since)
+
+### 四、被动语态
+
+#### 1. 构成
+- 一般现在时：am/is/are + 过去分词
+- 一般过去时：was/were + 过去分词
+- 一般将来时：will be + 过去分词
+
+#### 2. 用法
+- 主动句：They clean the classroom every day.
+- 被动句：The classroom is cleaned every day.
+
+#### 3. 练习
+改成被动语态：
+1. They build houses. → Houses are built.
+2. He wrote a letter. → A letter was written.
+3. They will finish the work. → The work will be finished.
+4. She cleans the room every day. → The room is cleaned every day.
+5. He broke the window. → The window was broken.
+
+### 五、直接引语和间接引语
+
+#### 1. 直接引语变间接引语
+- 时态变化：一般现在时→一般过去时，一般过去时→过去完成时
+- 人称变化：第一人称→第三人称，第二人称→第一人称
+- 时间状语变化：now→then, today→that day, yesterday→the day before
+
+#### 2. 练习
+改成间接引语：
+1. He said, "I am a student." → He said that he was a student.
+2. She said, "I like apples." → She said that she liked apples.
+3. He said, "I went to the park yesterday." → He said that he had gone to the park the day before.
+4. She said, "I will go to Beijing tomorrow." → She said that she would go to Beijing the next day.
+5. He said, "I can swim." → He said that he could swim.
+
+## 句型训练
+
+### 一、常用句型
+
+#### 1. 问候
+- Hello! / Hi! 你好！
+- Good morning! 早上好！
+- How are you? 你好吗？
+- I'm fine, thank you. 我很好，谢谢。
+
+#### 2. 介绍
+- My name is... 我的名字是……
+- I'm from... 我来自……
+- This is my... 这是我的……
+
+#### 3. 询问
+- What's your name? 你叫什么名字？
+- How old are you? 你多大了？
+- Where are you from? 你来自哪里？
+- What do you like? 你喜欢什么？
+
+#### 4. 表达
+- I like... 我喜欢……
+- I don't like... 我不喜欢……
+- I want... 我想要……
+- I can... 我会……
+
+### 二、情景对话
+
+#### 1. 购物
+A: Can I help you?
+B: Yes, I'd like a T-shirt, please.
+A: What colour do you like?
+B: I like blue.
+A: Here you are.
+B: How much is it?
+A: It's 50 yuan.
+B: I'll take it.
+
+#### 2. 问路
+A: Excuse me. Where is the library?
+B: Go straight and turn left. It's on your right.
+A: Is it far from here?
+B: No, it's not far. You can walk there.
+A: Thank you!
+B: You're welcome!
+
+#### 3. 谈论天气
+A: What's the weather like today?
+B: It's sunny and warm.
+A: Can we go to the park?
+B: Yes, let's go!
+A: Great!
+
+#### 4. 谈论爱好
+A: What's your hobby?
+B: I like reading books and playing basketball.
+A: Do you like playing computer games?
+B: Sometimes. But I don't play too much.
+A: That's good!
+
+## 学习建议
+
+### 1. 系统学习
+- 按年级循序渐进
+- 理解语法规则
+- 多做练习巩固
+
+### 2. 语境运用
+- 在句子中学习语法
+- 多进行口语练习
+- 多读英语文章
+
+### 3. 对比记忆
+- 对比不同词性的用法
+- 对比不同时态的区别
+- 对比相似句型的差异
+
+### 4. 反复练习
+- 每天练习语法题
+- 建立错题本
+- 定期复习巩固
+
+语法是英语学习的骨架。通过系统的学习和练习，掌握语法规则，提高语言运用能力。坚持学习，多加练习，语法水平一定会有显著提高！

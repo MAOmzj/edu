@@ -1,0 +1,151 @@
+# 小学英语核心语法诊断与改错专项
+
+资料性质：原创学习补充材料，不对应某一出版社或教材版本。
+适用年级：小学三至六年级。
+检索关键词：English grammar, be verbs, do does, have has, tense, third person, plural, question, error correction, 语法改错。
+
+## 1. A complete English sentence
+
+A basic sentence usually needs a subject and a verb.
+
+- I swim every Friday. 我每周五游泳。
+- Amy is helpful. 埃米乐于助人。
+- The books are on the desk. 书在桌上。
+
+Do not put a form of be directly before an ordinary verb in the simple present.
+Wrong: I am play football every day.
+Right: I play football every day.
+
+## 2. am, is and are
+
+- I am; he/she/it is; you/we/they are.
+- A singular noun usually takes is: The cat is sleepy.
+- A plural noun usually takes are: The cats are sleepy.
+
+Negative forms: am not, is not/isn't, are not/aren't.
+Questions move the be verb to the front: Is Ben at home? Are the children ready?
+
+## 3. do, does and the third-person singular
+
+In the simple present, I/you/we/they use the base verb. He/she/it usually uses a verb ending in -s or -es.
+
+- I walk to school. Leo walks to school.
+- They watch birds. Mia watches birds.
+- We study English. Tom studies English.
+
+After does or doesn't, use the base verb.
+Wrong: Does she likes music?
+Right: Does she like music?
+
+## 4. have and has
+
+- I/you/we/they have.
+- He/she/it has.
+
+Examples: We have a new map. Our classroom has two doors.
+After does, use have: Does your brother have a bike?
+
+## 5. Nouns and plurals
+
+Common patterns:
+
+- book—books, desk—desks
+- bus—buses, box—boxes, watch—watches
+- baby—babies, family—families
+- leaf—leaves in common school vocabulary
+- child—children, man—men, foot—feet, mouse—mice
+
+Some nouns are usually uncountable: water, milk, rice, bread, advice. Say some water or a glass of water, not “a water” when talking about the substance.
+
+## 6. Articles: a, an and the
+
+Use a before a consonant sound and an before a vowel sound.
+
+- a university: university begins with the /j/ consonant sound.
+- an hour: hour begins with a vowel sound because h is silent.
+
+Use the when both speaker and listener know which thing is meant: Please close the door.
+
+## 7. Present continuous
+
+Form: am/is/are + verb-ing. It often describes an action happening now.
+
+- I am reading now.
+- The dog is running in the garden.
+- They are making a model plane.
+
+Spelling examples: make—making, run—running, lie—lying.
+
+Do not forget the be verb.
+Wrong: They playing chess.
+Right: They are playing chess.
+
+## 8. Simple past
+
+The simple past describes a completed action in the past.
+
+- We visited the museum yesterday.
+- She went home at five.
+- I did my homework after dinner.
+
+After did or didn't, use the base verb.
+Wrong: Did you went there?
+Right: Did you go there?
+
+Common irregular verbs: go—went, see—saw, have—had, do—did, eat—ate, take—took, buy—bought, come—came.
+
+## 9. Future expressions
+
+- be going to + base verb: a plan or intention.
+- will + base verb: a future statement, decision or prediction.
+
+Examples: We are going to plant trees on Saturday. I think it will rain tonight.
+
+After will, always use the base verb: She will come, not “will comes”.
+
+## 10. Question words
+
+- who asks about a person.
+- what asks about a thing or action.
+- where asks about a place.
+- when asks about time.
+- why asks for a reason; answer with because.
+- how asks about manner or condition.
+- how many asks about countable nouns; how much asks about price or uncountable quantity.
+
+Word order: Question word + helping verb/be verb + subject + other words?
+Where do you live? Why is the window open? How many books does he have?
+
+## 11. Diagnostic exercises
+
+Correct each sentence.
+
+1. She are my new classmate.
+2. Tom go to the library on Sundays.
+3. Does Lily likes apples?
+4. My school have a large playground.
+5. There are three child in the room.
+6. I need a orange for the fruit salad.
+7. The boys playing basketball now.
+8. We goed to the park yesterday.
+9. Did you watched the film last night?
+10. He will visits his grandparents tomorrow.
+11. How much pencils do you have?
+12. Where you are going?
+
+## 12. Answers and reasons
+
+1. She is my new classmate. “She” takes is.
+2. Tom goes to the library on Sundays. Third-person singular.
+3. Does Lily like apples? Use the base verb after does.
+4. My school has a large playground. Singular subject.
+5. There are three children in the room. Irregular plural.
+6. I need an orange for the fruit salad. Orange begins with a vowel sound.
+7. The boys are playing basketball now. Present continuous needs are.
+8. We went to the park yesterday. Irregular past form.
+9. Did you watch the film last night? Use the base verb after did.
+10. He will visit his grandparents tomorrow. Use the base verb after will.
+11. How many pencils do you have? Pencils are countable.
+12. Where are you going? Move are before the subject.
+
+Editing order: find the time word—find the subject—choose the verb form—check singular/plural—check word order and punctuation.

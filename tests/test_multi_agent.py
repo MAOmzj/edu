@@ -20,6 +20,7 @@ from agent.multi_agent.state import (
 )
 from agent.multi_agent.subject_agent import build_subject_agent_tool
 from memory.store import EducationMemoryStore
+from utils.config_handler import app_conf
 
 
 class StubSubjectAgent:
@@ -314,11 +315,16 @@ class MultiAgentWorkflowTests(unittest.TestCase):
     def test_long_thread_is_summarized_in_checkpoint_state(self):
         """验证长会话把旧消息变成摘要，最新 State 只保留最近原文。"""
 
-        subject = StubSubjectAgent([f"第{index}轮答案" for index in range(1, 7)])
+        # 每轮结束产生“学生 + 助手”两条消息；下一轮学生问题进入后触发压缩。
+        trigger_messages = int(app_conf["context"]["summary_trigger_messages"])
+        turn_count = trigger_messages // 2 + 1
+        subject = StubSubjectAgent(
+            [f"第{index}轮答案" for index in range(1, turn_count + 1)]
+        )
         reviewer = StubReviewAgent(
             [
                 ReviewResult(approved=True, score=90, feedback="通过")
-                for _ in range(6)
+                for _ in range(turn_count)
             ]
         )
         memory = StubMemoryAgent()
@@ -326,7 +332,7 @@ class MultiAgentWorkflowTests(unittest.TestCase):
         student_id = "student-summary-001"
         thread_id = "thread-summary-001"
 
-        for index in range(1, 7):
+        for index in range(1, turn_count + 1):
             agent.answer(
                 f"第{index}轮问题",
                 "科学",
@@ -342,7 +348,10 @@ class MultiAgentWorkflowTests(unittest.TestCase):
         }
         latest_state = agent.agent.get_state(checkpoint_config).values
         self.assertIn("第1轮问题", latest_state["conversation_summary"])
-        self.assertLessEqual(len(latest_state["messages"]), 8)
+        self.assertLessEqual(
+            len(latest_state["messages"]),
+            int(app_conf["context"]["summary_keep_recent_messages"]) + 1,
+        )
         self.assertNotIn(
             "第1轮问题",
             [message.content for message in latest_state["messages"]],

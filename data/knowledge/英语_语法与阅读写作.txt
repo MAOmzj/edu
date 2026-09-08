@@ -1,0 +1,313 @@
+小学英语语法与阅读写作专题百科
+
+本资料是《英语基础》和两套词汇书的配套专题，系统整理小学阶段核心语法要点、阅读理解技巧和写作范文。语法是语言的规则，阅读是输入的通道，写作是输出的表达——三者结合才能真正用好英语。
+
+============================================================
+第一篇：核心语法精讲
+============================================================
+
+一、名词复数变化规则总结
+
+【规则变化】
+一般情况加 -s：book→books, pen→pens, day→days
+以 s, x, ch, sh 结尾加 -es：bus→buses, box→boxes, watch→watches
+辅音字母 + y 结尾，变 y 为 i 加 -es：baby→babies, city→cities, story→stories
+以 f 或 fe 结尾，变 f/fe 为 v 加 -es：knife→knives, leaf→leaves, life→lives
+以 o 结尾有生命的加 -es：tomato→tomatoes, potato→potatoes
+以 o 结尾无生命的加 -s：photo→photos, piano→pianos
+
+【不规则变化】
+man→men, woman→women, child→children
+foot→feet, tooth→teeth, mouse→mice
+fish→fish, sheep→sheep, deer→deer, Chinese→Chinese
+
+【单复数同形要牢记】
+fish, sheep, deer, Chinese, Japanese 单复数一样。
+注意：man 和 woman 修饰复数名词时也要变：two men teachers。
+
+二、冠词 a/an/the 用法总结
+
+【a 和 an 的区别】
+看发音不看字母！
+a + 辅音音素开头的词：a book, a car, a uniform（u发/juː/辅音）, a useful book
+an + 元音音素开头的词：an apple, an egg, an hour（h不发音）, an honest boy
+
+【the 的用法】
+特指：Close the door, please.（双方都知道的那扇门）
+独一无二：the sun, the moon, the earth
+第二次提到：I have a cat. The cat is white.
+序数词前：the first, the second
+最高级前：the tallest, the best
+乐器前：play the piano, play the guitar
+
+【不用 the 的情况】
+球类运动：play football/basketball（不加 the）
+三餐前：have breakfast/lunch/dinner
+by + 交通工具：by bus, by bike, by plane
+国名、人名前：China, Tom
+
+三、代词用法总结
+
+【人称代词对照表】
+人称 | 主格（作主语） | 宾格（作宾语）
+I | I | me
+you | you | you
+he/she/it | he/she/it | him/her/it
+we | we | us
+they | they | them
+
+口诀：主格在动词前（I like her），宾格在动词后或介词后（She helps me. Look at him.）
+
+【物主代词对照表】
+人称 | 形容词性（+名词） | 名词性（不+名词）
+I | my (my book) | mine
+you | your (your bag) | yours
+he/she/it | his/her/its (his pen) | his/hers/its
+we | our (our school) | ours
+they | their (their room) | theirs
+
+口诀：形容词性物主代词后面必须跟名词，名词性物主代词后面不能跟名词。
+This is my book. = This book is mine.
+
+四、be 动词用法口诀
+
+I 用 am，you 用 are，is 用于 he/she/it。
+单数名词用 is，复数名词用 are。
+否定句：be 动词后加 not（is not = isn't, are not = aren't, am not 无缩写）
+一般疑问句：be 动词提到句首。Are you a student? Yes, I am. / No, I'm not.
+
+五、一般现在时三单变化
+
+主语是第三人称单数（he/she/it/单个人名/单个事物）时，动词要加 s/es。
+变化规则与名词复数相同：
+一般加 -s：play→plays, like→likes, read→reads
+以 s, x, ch, sh, o 结尾加 -es：watch→watches, go→goes, do→does
+辅音 + y 结尾变 y 为 i 加 -es：study→studies, carry→carries
+
+否定句和疑问句借助 do/does：
+I/you/we/they + don't + 动词原形：I don't like milk.
+he/she/it + doesn't + 动词原形：He doesn't like milk.
+Do + I/you/we/they + 动词原形？：Do you like apples?
+Does + he/she/it + 动词原形？：Does he go to school?
+
+⚠️ does 后面动词恢复原形！Does he go?（不说 Does he goes?）
+
+六、现在进行时
+
+结构：主语 + am/is/are + 动词ing
+动词 ing 变化规则：
+一般直接加 -ing：play→playing, read→reading
+以不发音 e 结尾去 e 加 -ing：make→making, write→writing, dance→dancing
+重读闭音节末尾辅音双写加 -ing：run→running, swim→swimming, sit→sitting
+标志词：now, look!, listen!, at the moment
+
+七、一般过去时
+
+结构：主语 + 动词过去式
+规则变化：一般加 -ed，以 e 结尾加 -d，辅音+y 变 i 加 -ed，重读闭音节双写加 -ed。
+不规则动词必背（高频）：
+go→went, come→came, have→had, do→did, eat→ate, drink→drank
+see→saw, read→read, write→wrote, take→took, buy→bought
+get→got, run→ran, swim→swam, sing→sang, fly→flew
+ride→rode, sit→sat, give→gave, make→made, say→said
+tell→told, win→won, meet→met, feel→felt, sleep→slept
+keep→kept, leave→left, lose→lost, put→put, cut→cut
+is/am→was, are→were
+
+⚠️ 否定句：didn't + 动词原形。I didn't go.（不说 didn't went）
+疑问句：Did + 主语 + 动词原形？Did you finish?
+
+八、一般将来时
+
+will 结构：主语 + will + 动词原形
+否定：will not = won't
+疑问：Will + 主语 + 动词原形？
+
+be going to 结构：主语 + am/is/are going to + 动词原形
+表示有计划打算或根据迹象推测。
+I am going to visit my grandma tomorrow.（有计划）
+Look at the clouds. It's going to rain.（根据迹象推测）
+
+九、情态动词
+
+can：表示能力、许可。后接动词原形，不随主语变化。
+He can swim. Can you help me?
+
+must：表示必须。mustn't 表示禁止。
+We must follow the rules. You mustn't run in the street.
+
+should：表示应该、建议。后接动词原形。
+You should drink more water.
+
+will：表示将要。否定 won't。
+
+⚠️ 情态动词后面都接动词原形，不随主语变化，否定直接在情态动词后加 not。
+
+十、常考句型转换
+
+【陈述句→一般疑问句】
+有 be 动词：be 提到句首。He is happy. → Is he happy?
+有情态动词：情态动词提到句首。She can sing. → Can she sing?
+只有实义动词：加 Do/Does。He likes apples. → Does he like apples?
+
+【陈述句→否定句】
+有 be 动词：be 后加 not。She is a teacher. → She isn't a teacher.
+有情态动词：情态动词后加 not。I can swim. → I can't swim.
+只有实义动词：加 don't/doesn't。He plays football. → He doesn't play football.
+
+【对画线部分提问】
+先判断画线部分是什么（人/物/时间/地点/原因/方式），再选对应的疑问词。
+what（什么）, who（谁）, whose（谁的）, where（哪里）, when（什么时候）
+what time（几点）, why（为什么）, how（怎样）, how many（多少-可数）
+how much（多少-不可数/多少钱）, how old（多大）
+
+步骤：疑问词 + 一般疑问句语序。
+He is reading a book.（对 a book 提问）→ What is he reading?
+She goes to school by bus.（对 by bus 提问）→ How does she go to school?
+
+============================================================
+第二篇：阅读理解技巧
+============================================================
+
+十一、阅读步骤
+
+第一步：看标题和图片，猜文章主题。
+第二步：快速通读全文，了解大意，不必每个词都读懂。
+第三步：读题目，带着问题回文中找答案。
+第四步：联系上下文猜生词意思。
+第五步：检查答案——在文中找到依据。
+
+十二、常见题型与答题方法
+
+【判断正误 T/F】
+回到文中找到对应句子，逐词对比。注意：
+- 人名、地名、数字要完全一致
+- 时态要对应
+- 否定词 not/no/never 不能看漏
+- all/both/every 等绝对词要特别注意
+
+【选择题】
+先看选项再回文定位。排除明显错误选项，在文中找到依据选最佳答案。
+
+【回答问题】
+用完整句子回答，注意人称和时态的转换。
+问：What does Tom like? 答：Tom likes playing football.（不用 I）
+
+【填空题】
+从文中找原词或稍作变化填入。注意单复数、时态、大小写。
+
+十三、猜词技巧
+
+利用上下文：看这个词前后句子描述的内容推断。
+利用构词法：un- 表示"不"（unhappy = 不开心），-er 表示"……的人"（teacher = 教的人），-ful 表示"充满……的"（beautiful = 充满美的）。
+利用常识：结合生活经验推断。
+
+============================================================
+第三篇：写作指导与范文
+============================================================
+
+十四、写作步骤
+
+审题：写什么主题？什么人称？什么时态？
+列要点：写3-5个要点（不遗漏）。
+写句子：句子完整，单词拼写正确，注意大小写和标点。
+检查：时态是否一致？单复数对不对？标点是否正确？
+
+十五、自我介绍范文
+
+Hello! My name is Li Ming. I am eleven years old. I am a student in Grade Five. I am from Beijing. I am tall and thin. I have big eyes and short hair.
+I like playing football and reading books. My favourite subject is English because it is interesting. I don't like math because it is too difficult for me.
+My favourite food is ice cream. I don't like vegetables. I know they are healthy, but I think fruit is more delicious.
+I have a happy family. There are three people in my family: my father, my mother and me. My father is a doctor. My mother is a teacher. I love them very much.
+This is me. Do you want to be my friend?
+
+十六、我的家庭范文
+
+There are four people in my family: my father, my mother, my sister and me.
+My father is tall and strong. He is a doctor. He works in a big hospital. He likes playing basketball. He is very kind and always helps others.
+My mother is beautiful. She is a teacher. She teaches English in a primary school. She likes cooking. She cooks delicious food for us every day.
+My sister is five years old. She is cute and lovely. She likes drawing pictures and watching cartoons.
+I am eleven years old. I am a student in Grade Five. I like reading books and playing football.
+I love my family. We are very happy together.
+
+十七、我的朋友范文
+
+My best friend is Wang Wei. He is twelve years old. He is tall and strong. He has short black hair and bright eyes.
+He is very friendly and helpful. He often helps me with my math. He is good at math and always gets good grades. We often study together after school.
+He likes playing basketball very much. He plays basketball every afternoon. He is in the school basketball team. He can run very fast and jump very high.
+On weekends, we often go to the park together. Sometimes we ride bikes, sometimes we fly kites. We always have a good time.
+I am lucky to have such a good friend. I hope we can be friends forever.
+
+十八、我的周末范文
+
+I had a wonderful weekend.
+On Saturday morning, I got up at seven o'clock. After breakfast, I did my homework. In the afternoon, I went to the library with my mother. I borrowed three books. I like reading very much. In the evening, I watched a cartoon on TV. Then I read books for half an hour.
+On Sunday morning, my family went to the park. The weather was sunny and warm. We flew kites and had a picnic there. The grass was green and the flowers were beautiful. In the afternoon, I visited my grandparents. My grandma cooked many delicious dishes for us. After dinner, I went home and took a shower.
+I went to bed at nine o'clock. I was tired but very happy. What a nice weekend!
+
+十九、看图写话技巧
+
+观察顺序：从上到下，从左到右，从远到近，从人到物。
+确定要素：Who（谁）? Where（在哪）? What（做什么）? How（心情怎样）?
+时态判断：如果图上有 now/today 用现在时或现在进行时；如果有 yesterday 用过去时。
+常用句式：There is/are... In the picture... Look!... They are...
+注意：句子要完整，注意大小写和标点（英文句号是 . 不是 。）
+
+二十、书信范文
+
+Dear Amy,
+    How are you? I miss you very much.
+    Last weekend, I went to the zoo with my family. We saw many animals there. I liked the monkeys best. They were very clever. They could climb up and down. We also saw elephants, tigers and pandas. The pandas were eating bamboo. They were so cute!
+    We had a picnic near the lake. The weather was fine. We took many photos.
+    What did you do last weekend? Can you tell me?
+    Please write to me soon.
+                                    Yours,
+                                    Li Ming
+
+二十一、通知范文
+
+                            Notice
+    All the students of Grade Five,
+    There will be a school sports meeting next Friday afternoon on the playground. Please wear sports shoes and bring water. The meeting will start at 2:00 p.m. Please be on time.
+                                                    School
+                                                May 15th
+
+============================================================
+第四篇：常考语法对比辨析
+============================================================
+
+二十二、易混语法点对比
+
+【be 动词 vs 实义动词】
+系表结构用 be：I am happy. She is tall.
+实义动词句不用 be：I like apples.（不说 I am like apples.）
+He plays football.（不说 He is plays football.）
+
+【some vs any】
+some 用于肯定句：I have some apples.
+any 用于否定句和疑问句：I don't have any apples. Do you have any books?
+例外：征求意见、希望得到肯定回答时，疑问句用 some：Would you like some tea?
+
+【much vs many vs a lot of】
+many + 可数名词复数：many books, many students
+much + 不可数名词：much water, much time
+a lot of / lots of + 都可以：a lot of books, a lot of water
+
+【in/on/at + 时间】
+in + 月份/季节/年份/上午下午晚上：in May, in spring, in 2024, in the morning
+on + 具体某天/星期/节日：on Monday, on May 1st, on Children's Day
+at + 时刻/节日/中午/夜晚：at seven o'clock, at noon, at night, at Christmas
+例外：on a cold morning（特指某天的早晨用 on）
+
+【like doing vs like to do】
+like doing 表示一般性喜好：I like swimming.（喜欢游泳这件事）
+like to do 表示具体某次想做：I'd like to go swimming today.（今天想去游泳）
+would like to do = want to do 想要做
+
+【there be vs have/has】
+there be 表示"某处存在某物"：There is a book on the desk.
+have/has 表示"某人拥有"：I have a book.
+不能说 There have a book.（错误！）
+就近原则：There is a pen and two books.（靠近 is 的是 a pen 单数）
+
+英语语法就像搭积木的规则。先记住规则，再多造句多练习，规则就会变成习惯。不要怕犯错——犯错误是学习的一部分。每天读一点英语、写几个句子，你的英语就会越来越好。

@@ -1,26 +1,82 @@
-# 文件用途：配置知识目录、切分参数、SQLite/Chroma后端、Embedding批次和BM25混合权重。
+# 文件用途：配置知识目录、切分参数、SQLite/Chroma/Qdrant后端、Embedding批次和BM25混合权重。
 # 调用关系：config_handler.py 加载本文件；vector_store.py 和 vector_backends.py 使用这些参数。
 # 修改易踩坑：切分、模型、维度或后端路径变化后要重建索引；BM25与向量权重之和应保持合理。
 collection_name: primary_education
 
-# 修改这一项即可切换向量后端：sqlite 或 chroma。
-vector_backend: sqlite
+# 默认仍通过 HTTP 访问独立 Chroma；可用环境变量切到 SQLite 或 Qdrant。
+vector_backend: qdrant
 
-# 两种后端使用独立的数据和清单，切换时不会互相误判为已经完成索引。
+# 三种后端使用独立的数据和清单，切换时不会互相误判为已经完成索引。
 sqlite_database_path: storage/knowledge_vectors.sqlite3
 sqlite_manifest_path: storage/index_manifest_sqlite.json
 chroma_persist_directory: storage/chroma
 chroma_manifest_path: storage/index_manifest_chroma.json
+qdrant_manifest_path: storage/index_manifest_qdrant.json
+
+chroma_server:
+  mode: http
+  host: 127.0.0.1
+  port: 8000
+  ssl: false
+  tenant: default_tenant
+  database: default_database
+  # Chroma 原生 ANN 先召回 k 的 4 倍候选，且最多取 100 条；Python 只在
+  # 这批候选上融合 BM25，不再 get() 整个集合。
+  native_candidate_multiplier: 4
+  native_max_candidates: 100
+
+qdrant_server:
+  url: http://127.0.0.1:6333
+  grpc_port: 6334
+  # REST 更容易排障；压测确认吞吐收益并开放 6334 后再切为 true。
+  prefer_grpc: false
+  timeout: 10
+  # 必须与 text-embedding-v4 的输出维度一致；更改后要重建 Qdrant 索引。
+  vector_size: 1024
+  distance: cosine
+  upsert_batch_size: 64
+  delete_batch_size: 256
+  # deploy/qdrant 是单节点基线，因此副本和写一致性均为 1。真正 HA 集群可按节点数
+  # 调高 replication_factor，并令 write_consistency_factor 不超过副本数。
+  shard_number: 1
+  replication_factor: 1
+  write_consistency_factor: 1
+  # medium/majority 在单节点等价于本机确认，迁移到多副本后仍能避免明显旧读。
+  write_ordering: medium
+  read_consistency: majority
+  on_disk_payload: true
+  on_disk_vectors: true
+  hnsw_m: 16
+  hnsw_ef_construct: 100
+  hnsw_full_scan_threshold: 10000
+  search_hnsw_ef: 128
+  # Qdrant 原生 ANN 只召回有限候选；BM25 与云端 Rerank 都不会扫描整个集合。
+  native_candidate_multiplier: 4
+  native_max_candidates: 100
 
 data_path: data/knowledge
 allowed_file_types: [txt, pdf]
-k: 4
+k: 5
 
-# SQLite 混合检索：语义向量为主，BM25 精确关键词为辅。
+# 生产请求只读 Qdrant；索引由唯一部署任务显式执行，避免网页请求触发全量建库，
+# 也避免多个 Uvicorn worker 同时改远端集合与本地 manifest。
+sync_on_search: false
+
+# Chroma 混合检索：语义向量为主，BM25 精确关键词为辅。
 hybrid_vector_weight: 0.65
 hybrid_bm25_weight: 0.35
 bm25_k1: 1.5
 bm25_b: 0.75
+
+# 阿里云百炼 Rerank 精排（第二阶段）。
+# 开启后：向量 + BM25 先召回 candidate_k 条，再调用阿里云 Rerank 精排，最终返回 k 条。
+# 需要 .env 中配置 DASHSCOPE_API_KEY；Rerank 失败时自动回退到原混合排序结果。
+rerank:
+  # 生产试运行启用第二阶段精排；缺少 Key、超时或服务异常时会回退混合排序。
+  enabled: true
+  model: gte-rerank
+  candidate_k: 20
+  timeout: 8
 
 chunk_size: 500
 chunk_overlap: 60

@@ -26,18 +26,20 @@ skills:
 # 统一 Context Manager 的上下文预算。最近消息优先，较旧或低优先级内容先裁剪。
 context:
   # Prompt 中最多选择的最近原始消息数量。
-  recent_message_limit: 8
-  max_conversation_chars: 4000
-  max_long_term_chars: 1800
+  recent_message_limit: 12
+  max_conversation_chars: 8000
+  max_long_term_chars: 2000
   max_review_feedback_chars: 1200
-  # 消息达到10条或会话文字超过4000字符时，把较旧消息增量并入摘要。
+  # 单机生产基线：约 12 轮问答或会话文字超过 8000 字符时触发增量摘要。
+  # 工作流在当前学生问题已经进入、助手尚未回答时执行压缩，因此保留 11 条
+  # 可覆盖“最近 5 轮完整问答 + 当前问题”，避免从问答对中间截断。
   summary_enabled: true
-  summary_trigger_messages: 10
-  summary_keep_recent_messages: 6
-  summary_trigger_chars: 4000
-  max_summary_chars: 1400
+  summary_trigger_messages: 24
+  summary_keep_recent_messages: 11
+  summary_trigger_chars: 8000
+  max_summary_chars: 2000
 
-# Tavily 只补充本地知识库缺少的资料和时效信息，不替代 SQLite RAG。
+# Tavily 只补充本地知识库缺少的资料和时效信息，不替代本地 RAG。
 web_search:
   enabled: true
   # 审核 Agent 是否也能联网。默认关闭可减少延迟和 Tavily 调用次数。
@@ -65,5 +67,6 @@ web_search:
 
 memory:
   database_path: storage/education_memory.sqlite3
-  max_long_term_memories: 120
+  # SQLite 仅作为单机生产试运行方案；多副本部署前应迁移到共享数据库。
+  max_long_term_memories: 200
   retrieval_limit: 5

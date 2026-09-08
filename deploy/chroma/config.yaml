@@ -1,0 +1,7 @@
+# 文件用途：配置独立 Chroma Server 的监听地址、数据目录与危险管理能力。
+# 调用关系：docker-compose.yml 将本文件只读挂载，并通过 CONFIG_PATH 加载。
+# 修改易踩坑：生产环境不能开启 allow_reset；认证应由私有网络/API 网关/mTLS 提供。
+port: 8000
+listen_address: 0.0.0.0
+persist_path: /data
+allow_reset: false

@@ -1,0 +1,34 @@
+# 文件用途：将 Qdrant 作为独立非 root 进程运行，并用命名卷持久化向量数据。
+# 调用关系：README 中的 docker compose 命令启动本文件；应用通过 127.0.0.1:6333 访问。
+# 修改易踩坑：单节点 Compose 不是 HA；生产认证、TLS、快照与多节点副本需在平台层配置。
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.19.0-unprivileged
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "127.0.0.1:${QDRANT_HTTP_PORT:-6333}:6333"
+      - "127.0.0.1:${QDRANT_GRPC_PORT:-6334}:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+      - qdrant_snapshots:/qdrant/snapshots
+    healthcheck:
+      # 官方镜像没有 curl/wget；用 Bash 内置 /dev/tcp 请求官方 readiness 端点。
+      test:
+        - CMD-SHELL
+        - >-
+          bash -ec 'exec 3<>/dev/tcp/127.0.0.1/6333;
+          printf "GET /readyz HTTP/1.0\r\nHost: localhost\r\n\r\n" >&3;
+          IFS= read -r status <&3;
+          [[ "$$status" == *" 200 "* ]]'
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    stop_grace_period: 30s
+
+volumes:
+  qdrant_data:
+  qdrant_snapshots:

@@ -500,13 +500,15 @@ async function sendQuestion(question) {
       );
     }
   } finally {
+    // 会话列表刷新是次要操作，不能让它的延迟或渲染异常继续锁住输入框。
+    // 主问答无论成功、500 还是网络中断，都先恢复用户输入能力。
+    setBusy(false);
+    elements.questionInput.focus();
     try {
       await refreshConversations({ adoptCurrentMetadata: true });
     } catch {
       renderConversationList();
     }
-    setBusy(false);
-    elements.questionInput.focus();
   }
 }
 
