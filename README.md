@@ -7,7 +7,7 @@
 # 小学教育知识问答系统
 
 面向小学一至六年级学生的中文教育知识问答项目，基于 LangChain/LangGraph
-多 Agent、DeepSeek 官方 API、可切换的 SQLite/独立 Chroma/独立 Qdrant 向量后端
+多 Agent、DeepSeek、可切换的 SQLite/独立 Chroma/独立 Qdrant 向量后端
 和 SQLite 记忆库，提供网页聊天与命令行两种使用方式。
 
 ## 主要功能
