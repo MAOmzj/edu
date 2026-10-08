@@ -65,6 +65,20 @@ class VectorBackend(Protocol):
         """按照查询向量和可选元数据条件返回最相似文档。"""
         ...
 
+    def dense_search(
+        self,
+        query: str,
+        *,
+        k: int,
+        filter: dict[str, Any] | None = None,
+    ) -> list[Document]:
+        """只按向量相似度召回，返回稳定分片 ID。"""
+        ...
+
+    def count_documents(self) -> int:
+        """统计当前集合实际分片数量，供增量同步核对清单。"""
+        ...
+
 
 class SQLiteVectorBackend:
     """使用标准库 SQLite 保存向量，并用 Python 计算余弦相似度。"""
@@ -316,16 +330,21 @@ class SQLiteVectorBackend:
                 (self.collection_name,),
             )
 
-    def similarity_search(
+    def count_documents(self) -> int:
+        """只统计本集合，不读取正文或向量。"""
+        with self._connect() as connection:
+            return int(connection.execute(
+                "SELECT COUNT(*) FROM education_vector_chunks WHERE collection_name = ?",
+                (self.collection_name,),
+            ).fetchone()[0])
+
+    def _dense_candidates(
         self,
         query: str,
         *,
-        k: int,
         filter: dict[str, Any] | None = None,
-    ) -> list[Document]:
-        """为候选文档计算余弦与 BM25 混合分数，并返回前 k 条。"""
-        if k < 1:
-            return []
+    ) -> tuple[list[str], list[Document], list[float]]:
+        """Compute candidate cosine scores for dense and legacy hybrid retrieval."""
         # 知识文本建库时用 embed_documents，提问时用 embed_query；两者必须来自
         # 同一个模型，否则向量不在同一空间，余弦分数没有意义。
         query_vector = self._validate_embedding(
@@ -364,6 +383,7 @@ class SQLiteVectorBackend:
                 raise RuntimeError(f"向量分片 {chunk_id} 的元数据已损坏") from exc
             if not isinstance(metadata, dict):
                 raise RuntimeError(f"向量分片 {chunk_id} 的元数据不是对象")
+            metadata["chunk_id"] = str(chunk_id)
             if not self._metadata_matches(metadata, filter):
                 continue
             document_vector = self._decode_embedding(blob, dimension)
@@ -379,6 +399,38 @@ class SQLiteVectorBackend:
             )
             cosine_scores.append(score)
 
+        return candidate_ids, candidate_documents, cosine_scores
+
+    def dense_search(
+        self,
+        query: str,
+        *,
+        k: int,
+        filter: dict[str, Any] | None = None,
+    ) -> list[Document]:
+        """Return the requested vector results with stable metadata.chunk_id values."""
+        if k < 1:
+            return []
+        identifiers, documents, scores = self._dense_candidates(query, filter=filter)
+        ranked = sorted(
+            zip(scores, identifiers, documents, strict=True),
+            key=lambda item: (-item[0], item[1]),
+        )
+        return [document for _, _, document in ranked[:k]]
+
+    def similarity_search(
+        self,
+        query: str,
+        *,
+        k: int,
+        filter: dict[str, Any] | None = None,
+    ) -> list[Document]:
+        """为候选文档计算余弦与 BM25 混合分数，并返回前 k 条。"""
+        if k < 1:
+            return []
+        candidate_ids, candidate_documents, cosine_scores = self._dense_candidates(
+            query, filter=filter
+        )
         return rank_documents_by_hybrid_score(
             query,
             candidate_ids,
@@ -497,30 +549,25 @@ class ChromaVectorBackend:
         """通过原有 Chroma 接口清空并重建当前集合。"""
         self._store.reset_collection()
 
-    def similarity_search(
+    def count_documents(self) -> int:
+        """通过原生 count 查询集合数量，避免全量 get()。"""
+        return int(self._store._collection.count())
+
+    def _dense_candidates(
         self,
         query: str,
         *,
         k: int,
         filter: dict[str, Any] | None = None,
-    ) -> list[Document]:
-        """用 Chroma ANN 召回有限候选，再在候选集上融合 BM25 分数。"""
-        if k < 1:
-            return []
-
+    ) -> tuple[list[str], list[Document], list[float]]:
+        """Run one native vector query without changing its candidate order."""
         # 原生向量查询先把集合缩小到有限候选，避免旧实现 get() 全量拉取正文、
         # 元数据和向量。BM25 在候选集内校正精确关键词排序，随后上层还可 Rerank。
-        candidate_k = min(
-            self.native_max_candidates,
-            max(k, k * self.native_candidate_multiplier),
-        )
         scored_documents = self._store.similarity_search_with_score(
             query,
-            k=candidate_k,
+            k=k,
             filter=filter,
         )
-        if not scored_documents:
-            return []
 
         candidate_ids: list[str] = []
         candidate_documents: list[Document] = []
@@ -531,18 +578,54 @@ class ChromaVectorBackend:
                 raise RuntimeError("Chroma 返回了 NaN 或无穷距离")
             metadata = dict(document.metadata)
             stable_id = (
-                getattr(document, "id", None)
-                or metadata.get("chunk_id")
+                metadata.get("chunk_id")
+                or getattr(document, "id", None)
                 or (
                     f"{metadata.get('source', '')}:"
                     f"{metadata.get('file_hash', '')}:"
                     f"{metadata.get('chunk_index', position)}"
                 )
             )
-            candidate_ids.append(str(stable_id))
-            candidate_documents.append(document)
+            stable_id = str(stable_id)
+            metadata["chunk_id"] = stable_id
+            candidate_ids.append(stable_id)
+            candidate_documents.append(
+                document.model_copy(update={"metadata": metadata})
+            )
             cosine_scores.append(max(-1.0, min(1.0, 1.0 - distance)))
 
+        return candidate_ids, candidate_documents, cosine_scores
+
+    def dense_search(
+        self,
+        query: str,
+        *,
+        k: int,
+        filter: dict[str, Any] | None = None,
+    ) -> list[Document]:
+        """Return the requested vector results with stable metadata.chunk_id values."""
+        if k < 1:
+            return []
+        _, documents, _ = self._dense_candidates(query, k=k, filter=filter)
+        return documents[:k]
+
+    def similarity_search(
+        self,
+        query: str,
+        *,
+        k: int,
+        filter: dict[str, Any] | None = None,
+    ) -> list[Document]:
+        """用 Chroma ANN 召回有限候选，再在候选集上融合 BM25 分数。"""
+        if k < 1:
+            return []
+        candidate_k = min(
+            self.native_max_candidates,
+            max(k, k * self.native_candidate_multiplier),
+        )
+        candidate_ids, candidate_documents, cosine_scores = self._dense_candidates(
+            query, k=candidate_k, filter=filter
+        )
         return rank_documents_by_hybrid_score(
             query,
             candidate_ids,
@@ -1049,25 +1132,18 @@ class QdrantVectorBackend:
         self._collection_ready = False
         self._ensure_collection()
 
-    def similarity_search(
+    def _dense_candidates(
         self,
         query: str,
         *,
         k: int,
         filter: dict[str, Any] | None = None,
-    ) -> list[Document]:
-        """用 Qdrant ANN 召回有限候选，再在候选集上融合 BM25 分数。"""
-        if k < 1:
-            return []
-
+    ) -> tuple[list[str], list[Document], list[float]]:
+        """Run one native vector query without changing its candidate order."""
         query_vector = self._validate_embedding(
             self.embedding_model.embed_query(query)
         )
         self._ensure_collection()
-        candidate_k = min(
-            self.native_max_candidates,
-            max(k, k * self.native_candidate_multiplier),
-        )
         response = self._client.query_points(
             collection_name=self.collection_name,
             query=query_vector,
@@ -1076,7 +1152,7 @@ class QdrantVectorBackend:
                 hnsw_ef=self.search_hnsw_ef,
                 exact=False,
             ),
-            limit=candidate_k,
+            limit=k,
             with_payload=True,
             with_vectors=False,
             consistency=self.read_consistency,
@@ -1092,8 +1168,10 @@ class QdrantVectorBackend:
             if not isinstance(page_content, str) or not isinstance(metadata, dict):
                 raise RuntimeError("Qdrant 候选点的正文或元数据格式错误")
             metadata = dict(metadata)
-            stable_id = str(payload.get("chunk_id") or point.id)
-            metadata.setdefault("chunk_id", stable_id)
+            stable_id = payload.get("chunk_id") or metadata.get("chunk_id")
+            if not isinstance(stable_id, str) or not stable_id.strip():
+                raise RuntimeError("Qdrant candidate is missing its original chunk_id")
+            metadata["chunk_id"] = stable_id
             for field in ("subject", "source", "file_hash"):
                 if field not in metadata and field in payload:
                     metadata[field] = payload[field]
@@ -1108,6 +1186,38 @@ class QdrantVectorBackend:
             # Qdrant Cosine 返回的已经是“越大越相似”的 score，不做 1-score。
             cosine_scores.append(max(-1.0, min(1.0, score)))
 
+        return candidate_ids, candidate_documents, cosine_scores
+
+    def dense_search(
+        self,
+        query: str,
+        *,
+        k: int,
+        filter: dict[str, Any] | None = None,
+    ) -> list[Document]:
+        """Return the requested vector results with stable metadata.chunk_id values."""
+        if k < 1:
+            return []
+        _, documents, _ = self._dense_candidates(query, k=k, filter=filter)
+        return documents[:k]
+
+    def similarity_search(
+        self,
+        query: str,
+        *,
+        k: int,
+        filter: dict[str, Any] | None = None,
+    ) -> list[Document]:
+        """用 Qdrant ANN 召回有限候选，再在候选集上融合 BM25 分数。"""
+        if k < 1:
+            return []
+        candidate_k = min(
+            self.native_max_candidates,
+            max(k, k * self.native_candidate_multiplier),
+        )
+        candidate_ids, candidate_documents, cosine_scores = self._dense_candidates(
+            query, k=candidate_k, filter=filter
+        )
         return rank_documents_by_hybrid_score(
             query,
             candidate_ids,

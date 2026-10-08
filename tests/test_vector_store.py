@@ -478,14 +478,22 @@ class VectorStoreTests(unittest.TestCase):
         )
         store.sync_on_search = False
         fake_backend = MagicMock()
-        fake_backend.similarity_search.return_value = []
+        fake_backend.dense_search.return_value = []
         store._vector_store = fake_backend
+        fake_lexical = MagicMock()
+        fake_lexical.is_ready.return_value = True
+        fake_lexical.search.return_value = []
 
-        with patch.object(store, "sync") as mock_sync:
+        with (
+            patch.object(store, "sync") as mock_sync,
+            patch.object(store, "_get_lexical_index", return_value=fake_lexical),
+            patch.object(store, "_current_manifest_digest", return_value="test-digest"),
+        ):
             self.assertEqual(store.search("三角形", subject="数学"), [])
 
         mock_sync.assert_not_called()
-        fake_backend.similarity_search.assert_called_once()
+        fake_backend.dense_search.assert_called_once()
+        fake_lexical.search.assert_called_once()
 
     def test_qdrant_sync_reconciles_missing_manifest_and_collection_points(self):
         """验证本地 manifest 与远端点数任一丢失时都会受控全量重建。"""
@@ -500,6 +508,7 @@ class VectorStoreTests(unittest.TestCase):
             store.data_path = knowledge
             store.manifest_path = root / "manifest.json"
             fake_backend = MagicMock(spec=QdrantVectorBackend)
+            fake_backend.count_documents.return_value = 0
             store._vector_store = fake_backend
 
             # manifest 不存在时不信任远端同名集合，先清空应用专属集合。
@@ -519,11 +528,13 @@ class VectorStoreTests(unittest.TestCase):
             }
             store._save_manifest(saved_manifest)
             fake_backend.reset_collection.reset_mock()
+            fake_backend.count_documents.reset_mock()
             fake_backend.count_documents.return_value = 0
 
             store.sync()
 
-            fake_backend.count_documents.assert_called_once_with()
+            self.assertEqual(fake_backend.count_documents.call_count, 2)
+            fake_backend.count_documents.assert_called_with()
             fake_backend.reset_collection.assert_called_once_with()
             fake_backend.delete.assert_not_called()
 
@@ -670,7 +681,7 @@ class VectorStoreTests(unittest.TestCase):
         self.assertEqual(status["backend"], "sqlite")
         self.assertEqual(
             status["retrieval_mode"],
-            "bm25_cosine_hybrid_aliyun_rerank",
+            "weighted_rrf_aliyun_rerank",
         )
         self.assertTrue(status["storage_path"].endswith("knowledge_vectors.sqlite3"))
         self.assertEqual(status["persist_directory"], status["storage_path"])

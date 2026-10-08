@@ -1,4 +1,4 @@
-# 文件用途：配置知识目录、切分参数、SQLite/Chroma/Qdrant后端、Embedding批次和BM25混合权重。
+# 文件用途：配置知识目录、切分参数、向量后端、独立BM25倒排召回和加权RRF。
 # 调用关系：config_handler.py 加载本文件；vector_store.py 和 vector_backends.py 使用这些参数。
 # 修改易踩坑：切分、模型、维度或后端路径变化后要重建索引；BM25与向量权重之和应保持合理。
 collection_name: primary_education
@@ -62,14 +62,24 @@ k: 5
 # 也避免多个 Uvicorn worker 同时改远端集合与本地 manifest。
 sync_on_search: false
 
-# Chroma 混合检索：语义向量为主，BM25 精确关键词为辅。
-hybrid_vector_weight: 0.65
-hybrid_bm25_weight: 0.35
+# 加权 RRF：按排名贡献融合，语义召回权重提高到 0.75，关键词召回为 0.25。
+# 它们不是原始相似度权重；后续可用离线评测调整，不代表最优比例。
+hybrid_vector_weight: 0.75
+hybrid_bm25_weight: 0.25
 bm25_k1: 1.5
 bm25_b: 0.75
 
+# 两路独立召回；倒排数据库跟随各后端 manifest，切换后端互不干扰。
+# 例如 storage/index_manifest_qdrant.bm25.sqlite3。
+hybrid_search:
+  # 0.75/0.25 且精排候选为 20 时，过大的常数会压制仅关键词召回的资料。
+  # 先采用 5，使高排名关键词候选仍能进入精排；后续用评测调优。
+  rrf_rank_constant: 5
+  vector_candidate_k: 80
+  bm25_candidate_k: 80
+
 # 阿里云百炼 Rerank 精排（第二阶段）。
-# 开启后：向量 + BM25 先召回 candidate_k 条，再调用阿里云 Rerank 精排，最终返回 k 条。
+# 开启后：两路候选经 RRF 保留 candidate_k 条，再调用 Rerank，最终返回 k 条。
 # 需要 .env 中配置 DASHSCOPE_API_KEY；Rerank 失败时自动回退到原混合排序结果。
 rerank:
   # 生产试运行启用第二阶段精排；缺少 Key、超时或服务异常时会回退混合排序。

@@ -1,4 +1,4 @@
-# 文件用途：提供终端问答、同步索引、重建索引和显示状态等命令行入口。
+# 文件用途：提供终端问答、双路索引同步、离线关键词补建、重建和状态查询入口。
 # 调用关系：用户通过 python main.py 调用本文件；本文件调用 EducationRuntime 和 EducationQAService。
 # 修改易踩坑：重建索引会改持久数据，命令参数要互斥；退出时必须关闭 SQLite 连接。
 """小学教育知识问答系统命令行入口。
@@ -84,6 +84,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="清空并重建知识库索引",
     )
     management.add_argument(
+        "--sync-keywords",
+        action="store_true",
+        help="从已有向量清单离线补建关键词倒排索引，不调用 Embedding",
+    )
+    management.add_argument(
         "--status",
         action="store_true",
         help="查看本地索引清单状态（不调用在线模型）",
@@ -144,6 +149,11 @@ def main() -> int:
             return 0
 
         # 索引管理只需要 Embedding；它不会创建 DeepSeek 聊天模型。
+        if args.sync_keywords:
+            report = EducationVectorStore().sync_keyword_index()
+            _print_json(asdict(report))
+            return 0
+
         if args.sync_index or args.rebuild_index:
             vector_store = EducationVectorStore()
             report = (

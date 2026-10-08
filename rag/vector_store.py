@@ -1,4 +1,4 @@
-# 文件用途：发现知识文件、切分文档、增量建索引、维护清单并向上层提供检索。
+# 文件用途：维护向量和关键词倒排索引，执行独立双路召回、加权RRF与精排。
 # 调用关系：qa_service.py 和 CLI 调用本文件；本文件调用 file_handler、model.factory 和 vector_backends。
 # 修改易踩坑：文件哈希清单必须与所选后端分开，切分参数或 Embedding 改变后必须重建索引。
 """教育知识库的增量索引和检索。
@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import threading
 from dataclasses import dataclass
@@ -30,6 +31,8 @@ from langchain_core.embeddings import Embeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from model.factory import create_embedding_model
+from rag.hybrid_search import reciprocal_rank_fusion
+from rag.lexical_index import BM25InvertedIndex, SCHEMA_VERSION as LEXICAL_SCHEMA_VERSION
 from rag.vector_backends import (
     ChromaVectorBackend,
     QdrantVectorBackend,
@@ -70,6 +73,8 @@ class IndexSyncReport:
     removed_files: int = 0
     unchanged_files: int = 0
     indexed_chunks: int = 0
+    lexical_indexed_files: int = 0
+    lexical_indexed_chunks: int = 0
 
 
 class EducationVectorStore:
@@ -241,6 +246,26 @@ class EducationVectorStore:
             self.persist_directory = self.qdrant_url
         self.allowed_types = tuple(knowledge_conf["allowed_file_types"])
         self.k = int(knowledge_conf["k"])
+        hybrid_conf = knowledge_conf.get("hybrid_search") or {}
+        self.vector_weight = float(knowledge_conf["hybrid_vector_weight"])
+        self.bm25_weight = float(knowledge_conf["hybrid_bm25_weight"])
+        if (
+            not all(
+                math.isfinite(value) and value >= 0
+                for value in (self.vector_weight, self.bm25_weight)
+            )
+            or self.vector_weight + self.bm25_weight <= 0
+        ):
+            raise ValueError("RRF 权重必须有限、非负，且至少一个大于 0")
+        self.rrf_rank_constant = hybrid_conf.get("rrf_rank_constant", 5)
+        self.vector_candidate_k = hybrid_conf.get("vector_candidate_k", 80)
+        self.bm25_candidate_k = hybrid_conf.get("bm25_candidate_k", 80)
+        for value in (
+            self.rrf_rank_constant, self.vector_candidate_k, self.bm25_candidate_k
+        ):
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise ValueError("RRF 常数与两路候选数量必须是大于 0 的整数")
+        self._manifest_digest_cache: tuple[tuple[str, int, int, str, str], str] | None = None
         rerank_conf = knowledge_conf.get("rerank") or {}
         self.rerank_enabled = bool(rerank_conf.get("enabled", False))
         self.rerank_model = str(
@@ -255,6 +280,75 @@ class EducationVectorStore:
             separators=list(knowledge_conf["separators"]),
             length_function=len,
         )
+
+    def _get_lexical_index(self) -> BM25InvertedIndex:
+        """倒排索引跟随当前后端清单，路径变化时也不会误用其他后端数据。"""
+        schema = {
+            "storage_identity": self._storage_identity(),
+            "collection": knowledge_conf["collection_name"],
+            "index_schema": LEXICAL_SCHEMA_VERSION,
+            "chunking_fingerprint": self._chunking_fingerprint(),
+            "tokenizer": "nfkc-cjk-char-bigram-v1",
+        }
+        namespace = hashlib.sha256(
+            json.dumps(schema, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return BM25InvertedIndex(
+            self.manifest_path.with_suffix(".bm25.sqlite3"),
+            namespace,
+            k1=float(knowledge_conf["bm25_k1"]),
+            b=float(knowledge_conf["bm25_b"]),
+        )
+
+    def _chunking_fingerprint(self) -> str:
+        """同样分片数量不代表边界相同，单独记录实际切分参数。"""
+        schema = {
+            "chunk_size": self.splitter._chunk_size,
+            "chunk_overlap": self.splitter._chunk_overlap,
+            "separators": self.splitter._separators,
+        }
+        return hashlib.sha256(
+            json.dumps(schema, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+
+    @staticmethod
+    def _manifest_digest(manifest: dict[str, Any]) -> str:
+        """绑定向量清单中的文件、哈希和分片，防止两路检索混用不同版本。"""
+        content = {
+            key: manifest[key] for key in ("version", "storage_identity", "files")
+        }
+        content["chunking_fingerprint"] = manifest.get("chunking_fingerprint")
+        return hashlib.sha256(
+            json.dumps(content, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+
+    def _current_manifest_digest(self) -> str:
+        """缓存未变化清单的摘要；在线请求不扫描知识目录、不创建索引。"""
+        try:
+            stat = self.manifest_path.stat()
+        except FileNotFoundError as exc:
+            raise EnvironmentError("知识索引尚未建立，请先执行 python main.py --sync-index") from exc
+        signature = (
+            str(self.manifest_path.resolve()), stat.st_mtime_ns, stat.st_size,
+            self._storage_identity(), self._chunking_fingerprint(),
+        )
+        if self._manifest_digest_cache and self._manifest_digest_cache[0] == signature:
+            return self._manifest_digest_cache[1]
+        manifest = self._load_manifest()
+        if not manifest.get("_manifest_valid"):
+            raise EnvironmentError("知识索引清单与配置不匹配，请执行 python main.py --sync-index")
+        digest = self._manifest_digest(manifest)
+        self._manifest_digest_cache = (signature, digest)
+        return digest
+
+    def _require_lexical_ready(self, index: BM25InvertedIndex) -> str:
+        digest = self._current_manifest_digest()
+        if not index.is_ready(digest):
+            raise EnvironmentError(
+                "关键词倒排索引未就绪或与向量清单不一致。已有向量索引时执行 "
+                "python main.py --sync-keywords；知识文件已变化时执行 python main.py --sync-index"
+            )
+        return digest
 
     def _get_store(self) -> VectorBackend:
         """按照配置按需创建并复用 SQLite、Chroma 或 Qdrant 向量后端。"""
@@ -399,9 +493,9 @@ class EducationVectorStore:
         try:
             return self._get_reranker().rerank(query, documents, top_n=top_n)
         except Exception:
-            # Rerank 属于精排增强。接口失败或 Key 缺失时回退到向量 + BM25 顺序，
+            # Rerank 属于精排增强。接口失败或 Key 缺失时回退到加权 RRF 顺序，
             # 保证主 Agent 仍能拿到资料，而不是因为可选增强功能让本轮提问失败。
-            logger.exception("阿里云 Rerank 执行失败，回退到混合检索排序结果")
+            logger.exception("阿里云 Rerank 执行失败，回退到加权 RRF 排序结果")
             return documents[:top_n]
 
     def _load_manifest(self) -> dict[str, Any]:
@@ -423,6 +517,10 @@ class EducationVectorStore:
             manifest.get("version") != MANIFEST_VERSION
             or manifest.get("backend") != self.backend_name
             or manifest.get("storage_identity") != self._storage_identity()
+            or (
+                manifest.get("chunking_fingerprint") is not None
+                and manifest["chunking_fingerprint"] != self._chunking_fingerprint()
+            )
         ):
             return empty_manifest
         manifest.setdefault("files", {})
@@ -431,6 +529,7 @@ class EducationVectorStore:
 
     def _save_manifest(self, manifest: dict[str, Any]) -> None:
         """先写入临时文件再原子替换，安全保存最新索引清单。"""
+        manifest["chunking_fingerprint"] = self._chunking_fingerprint()
         self.manifest_path.parent.mkdir(parents=True, exist_ok=True)
         temporary = self.manifest_path.with_name(
             f".{self.manifest_path.name}.{os.getpid()}."
@@ -442,6 +541,7 @@ class EducationVectorStore:
                 encoding="utf-8",
             )
             os.replace(temporary, self.manifest_path)
+            self._manifest_digest_cache = None
         finally:
             if temporary.exists():
                 temporary.unlink()
@@ -474,6 +574,8 @@ class EducationVectorStore:
         relative_source = self._relative_source(path)
         subject = self._subject_for(path)
         source_documents = load_documents(path)
+        if calculate_sha256(path) != file_hash:
+            raise RuntimeError(f"知识文件 {path.name} 在读取期间发生变化，请重新同步索引")
         for document in source_documents:
             document.metadata = {
                 **document.metadata,
@@ -514,32 +616,33 @@ class EducationVectorStore:
         }
         manifest = self._load_manifest()
         manifest_valid = bool(manifest.pop("_manifest_valid", False))
+        if manifest_valid and self.backend_name != "qdrant" and not manifest.get("chunking_fingerprint"):
+            raise EnvironmentError(
+                "旧 SQLite/Chroma 清单缺少切分指纹，不能确认与当前配置一致；"
+                "请执行 python main.py --rebuild-index"
+            )
         previous: dict[str, Any] = manifest["files"]
+        lexical = self._get_lexical_index()
+        # 双库不能跨数据库事务提交；更新期间撤销就绪标记，避免在线读取混合版本。
+        lexical.invalidate()
+        lexical_sources = lexical.sources()
         store = self._get_store()
 
-        if self.backend_name == "qdrant":
-            if not isinstance(store, QdrantVectorBackend):
-                raise RuntimeError("Qdrant 后端类型与配置不一致")
-            if not manifest_valid:
-                # manifest 是远程集合的所有权清单。首次建立、版本变化或目标变化时，
-                # 先清空应用专属集合，避免无主旧点与新索引混合。
-                if not backend_already_reset:
-                    store.reset_collection()
-                previous = {}
-            else:
-                expected_points = sum(
-                    len(item.get("ids", [])) for item in previous.values()
+        if not manifest_valid:
+            # 所有后端都由清单管理；缺失清单时清空应用专属集合，避免无主旧片段。
+            if not backend_already_reset:
+                store.reset_collection()
+            previous = {}
+        else:
+            expected_points = sum(len(item.get("ids", [])) for item in previous.values())
+            actual_points = store.count_documents()
+            if actual_points != expected_points:
+                logger.warning(
+                    "%s 分片数与 manifest 不一致（实际 %d，期望 %d），自动全量重建",
+                    self.backend_name, actual_points, expected_points,
                 )
-                actual_points = store.count_documents()
-                if actual_points != expected_points:
-                    logger.warning(
-                        "Qdrant 点数与 manifest 不一致（实际 %d，期望 %d），"
-                        "自动执行全量重建",
-                        actual_points,
-                        expected_points,
-                    )
-                    store.reset_collection()
-                    previous = {}
+                store.reset_collection()
+                previous = {}
 
         # 第一步：清理“清单里有、磁盘上已经没有”的旧文件分片。
         for removed_source in sorted(set(previous) - set(current)):
@@ -548,6 +651,8 @@ class EducationVectorStore:
                 store.delete(ids=old_ids)
             report.removed_files += 1
             logger.info("已从知识库移除文件：%s", removed_source)
+        for removed_source in sorted(set(lexical_sources) - set(current)):
+            lexical.delete_source(removed_source)
 
         # 第二步：摘要未变化就跳过；新增或变化的文件重新切片并写向量。
         next_files: dict[str, Any] = {}
@@ -572,6 +677,16 @@ class EducationVectorStore:
         for source, item in current.items():
             previous_item = previous.get(source)
             if previous_item and previous_item.get("sha256") == item["sha256"]:
+                if lexical_sources.get(source) != previous_item:
+                    # 首次升级只补建倒排索引，不再次向量化已有、未变化的资料。
+                    chunks, ids = self._split_file(item["path"], item["sha256"])
+                    if ids != previous_item.get("ids", []):
+                        raise RuntimeError(
+                            f"文件 {source} 的切分与已有向量清单不一致，请执行 python main.py --rebuild-index"
+                        )
+                    lexical.replace_source(source, item["sha256"], chunks, ids)
+                    report.lexical_indexed_files += 1
+                    report.lexical_indexed_chunks += len(chunks)
                 next_files[source] = previous_item
                 report.unchanged_files += 1
                 continue
@@ -586,6 +701,9 @@ class EducationVectorStore:
             # 成功后再删除旧 ids，避免在线 Embedding 中断时把仍可检索的旧版本丢掉。
             if old_ids:
                 store.delete(ids=old_ids)
+            lexical.replace_source(source, item["sha256"], chunks, ids)
+            report.lexical_indexed_files += 1
+            report.lexical_indexed_chunks += len(chunks)
             next_files[source] = {"sha256": item["sha256"], "ids": ids}
             report.indexed_chunks += len(chunks)
             if previous_item:
@@ -600,19 +718,71 @@ class EducationVectorStore:
             save_progress_checkpoint()
 
         # 全部文件完成后写入最终清单；此时 next_files 已覆盖所有当前知识文件。
-        self._save_manifest(
-            {
-                "version": MANIFEST_VERSION,
-                "backend": self.backend_name,
-                "storage_identity": self._storage_identity(),
-                "files": next_files,
-            }
-        )
+        final_manifest = {
+            "version": MANIFEST_VERSION,
+            "backend": self.backend_name,
+            "storage_identity": self._storage_identity(),
+            "files": next_files,
+        }
+        self._save_manifest(final_manifest)
+        actual_points = store.count_documents()
+        expected_points = sum(len(item["ids"]) for item in next_files.values())
+        if actual_points != expected_points:
+            raise RuntimeError(
+                "向量库存在未完成写入遗留的分片，关键词索引仍保持未就绪；"
+                "请再次执行 python main.py --sync-index 自动修复"
+            )
+        lexical.mark_ready(self._manifest_digest(final_manifest))
         return report
+
+    def sync_keyword_index(self) -> IndexSyncReport:
+        """从已有向量清单离线补建倒排索引，不连接向量服务、不调用 Embedding。"""
+        with self._sync_lock:
+            manifest = self._load_manifest()
+            if not manifest.get("_manifest_valid"):
+                raise EnvironmentError("没有有效向量清单，请先执行 python main.py --sync-index")
+            if self.backend_name != "qdrant" and not manifest.get("chunking_fingerprint"):
+                raise EnvironmentError(
+                    "旧 SQLite/Chroma 清单缺少切分指纹，请执行 python main.py --rebuild-index"
+                )
+            expected = manifest["files"]
+            files = list_knowledge_files(self.data_path, self.allowed_types)
+            current = {self._relative_source(path): path for path in files}
+            if set(current) != set(expected):
+                raise EnvironmentError("知识文件已增删，请先执行 python main.py --sync-index")
+            for source, path in current.items():
+                if calculate_sha256(path) != expected[source]["sha256"]:
+                    raise EnvironmentError(f"知识文件 {source} 已变化，请先执行 python main.py --sync-index")
+            digest = self._manifest_digest(manifest)
+            index = self._get_lexical_index()
+            report = IndexSyncReport()
+            index.invalidate()
+            previous = index.sources()
+            for source in sorted(set(previous) - set(current)):
+                index.delete_source(source)
+            for source, path in current.items():
+                item = expected[source]
+                if previous.get(source) == item:
+                    report.unchanged_files += 1
+                    continue
+                chunks, ids = self._split_file(path, item["sha256"])
+                if ids != item.get("ids", []):
+                    raise RuntimeError(
+                        f"文件 {source} 的切分与向量清单不一致，请执行 python main.py --rebuild-index"
+                    )
+                index.replace_source(source, item["sha256"], chunks, ids)
+                report.lexical_indexed_files += 1
+                report.lexical_indexed_chunks += len(chunks)
+                logger.info("已建立关键词索引：%s（%d 个分片）", source, len(chunks))
+            if self._current_manifest_digest() != digest:
+                raise RuntimeError("构建期间向量清单发生变化，请在唯一索引任务中重试")
+            index.mark_ready(digest)
+            return report
 
     def rebuild(self) -> IndexSyncReport:
         """清空现有向量集合和索引清单，再从知识文件完整重建索引。"""
         with self._sync_lock:
+            self._get_lexical_index().reset()
             store = self._get_store()
             store.reset_collection()
             if self.manifest_path.exists():
@@ -625,22 +795,41 @@ class EducationVectorStore:
         subject: str | None = None,
         k: int | None = None,
     ) -> list[Document]:
-        """同步最新知识文件后，按查询文本和可选学科执行相似度检索。"""
-        # 每次查询前做增量同步；未变化文件只比较摘要，不会重复请求 Embedding。
+        """分别召回语义和关键词候选，按加权 RRF 融合后执行可选精排。"""
         if self.sync_on_search:
             self.sync()
         filter_value = {"subject": subject} if subject and subject != "综合" else None
         search_options = {"filter": filter_value} if filter_value else {}
-        top_k = int(k or self.k)
+        top_k = self.k if k is None else k
+        if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k < 1:
+            raise ValueError("检索数量 k 必须是大于 0 的整数")
+        query = query.strip()
+        if not query:
+            raise ValueError("检索问题不能为空")
         candidate_k = (
             max(top_k, self.rerank_candidate_k)
             if self.rerank_enabled
             else top_k
         )
-        documents = self._get_store().similarity_search(
+        lexical = self._get_lexical_index()
+        digest = self._require_lexical_ready(lexical)
+        dense_documents = self._get_store().dense_search(
             query,
-            k=candidate_k,
+            k=max(candidate_k, self.vector_candidate_k),
             **search_options,
+        )
+        lexical_documents = lexical.search(
+            query,
+            k=max(candidate_k, self.bm25_candidate_k),
+            subject=subject if filter_value else None,
+        )
+        if self._require_lexical_ready(lexical) != digest:
+            raise EnvironmentError("检索期间索引发生更新，请稍后重试")
+        documents = reciprocal_rank_fusion(
+            [dense_documents, lexical_documents],
+            weights=[self.vector_weight, self.bm25_weight],
+            rank_constant=self.rrf_rank_constant,
+            k=candidate_k,
         )
         if not self.rerank_enabled:
             return documents[:top_k]
@@ -655,9 +844,9 @@ class EducationVectorStore:
         return {
             "backend": self.backend_name,
             "retrieval_mode": (
-                "bm25_cosine_hybrid_aliyun_rerank"
+                "weighted_rrf_aliyun_rerank"
                 if self.rerank_enabled
-                else "bm25_cosine_hybrid"
+                else "weighted_rrf"
             ),
             "collection": knowledge_conf["collection_name"],
             "knowledge_files": len(manifest["files"]),
@@ -720,8 +909,21 @@ class EducationVectorStore:
                 else None
             ),
             "hybrid_weights": {
-                "cosine": float(knowledge_conf["hybrid_vector_weight"]),
-                "bm25": float(knowledge_conf["hybrid_bm25_weight"]),
+                "cosine": self.vector_weight,
+                "bm25": self.bm25_weight,
+            },
+            "rrf": {
+                "rank_constant": self.rrf_rank_constant,
+                "vector_weight": self.vector_weight,
+                "bm25_weight": self.bm25_weight,
+                "vector_candidate_k": self.vector_candidate_k,
+                "bm25_candidate_k": self.bm25_candidate_k,
+            },
+            "keyword_index": {
+                **self._get_lexical_index().status(),
+                "database_path": str(self.manifest_path.with_suffix(".bm25.sqlite3")),
+                "ready": bool(manifest.get("_manifest_valid"))
+                and self._get_lexical_index().is_ready(self._manifest_digest(manifest)),
             },
             "rerank": {
                 "enabled": self.rerank_enabled,

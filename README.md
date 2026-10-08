@@ -14,7 +14,7 @@
 
 - 语文、数学、英语、科学、安全与品德知识问答，按学科和年级调整回答；
 - 学科回答、独立审核、学习记忆三个子 Agent 协作；
-- Chroma/Qdrant 原生向量召回、候选集 BM25 融合与可选 Rerank，资料不足时按需联网；
+- Chroma/Qdrant 原生语义召回、独立 BM25 倒排召回、加权 RRF 与可选 Rerank；
 - 跨请求短期对话记忆与跨会话长期学习记忆；
 - 安全的算术计算、知识文件自动增量索引。
 
@@ -55,6 +55,40 @@ docker compose -f deploy/qdrant/docker-compose.yml up -d --wait --wait-timeout 6
 # 4. 建立知识库索引（首次运行或从嵌入式 Chroma 迁移后）
 python main.py --sync-index
 ```
+
+### 双路检索与关键词索引
+
+问答时分别执行纯向量召回和独立 BM25 倒排召回，再按分片 ID 做加权 RRF：
+
+```text
+向量召回（80 条） ─┐
+                  ├→ 加权 RRF → 20 条候选 → Rerank → 最终 5 条
+关键词召回（80 条）┘
+```
+
+默认排名贡献为 `0.75 / (5 + 向量排名) + 0.25 / (5 + 关键词排名)`，
+排名从 1 开始，某一路没有召回时该项为 0。参数在 `config/knowledge.yml`
+中的 `hybrid_vector_weight`、`hybrid_bm25_weight` 和 `hybrid_search` 调整。
+常数采用 5，避免提高语义权重后仅关键词命中的资料全部被挡在 20 条候选之外。
+这是一组默认配置，需要评测后再调优；Rerank 失败时返回 RRF 排名前列的资料。
+
+倒排索引用标准库 SQLite 保存，查询只读取匹配词项，不在请求中重新分词全库。
+数据库跟随各向量后端的清单，例如 `storage/index_manifest_qdrant.bm25.sqlite3`；
+学科过滤同时应用于两路召回。增量同步会同时维护向量、倒排与文件清单。
+
+已有完整向量索引的用户可离线补建关键词索引，不连接向量服务器，也不调用 Embedding：
+
+```powershell
+python main.py --sync-keywords
+```
+
+补建会核对文件哈希和分片 ID。知识文件已变化时，先执行 `--sync-index`；
+已有清单与切分参数不一致时，需要 `--rebuild-index`；旧 SQLite/Chroma 清单
+未记录切分指纹时也需要显式重建。所有向量集合必须由本项目独占，清单缺失或
+分片数量不一致时，`--sync-index` 会清空当前后端集合并重建。
+缺失或未完成的关键词索引
+不会在网页请求中自动重建，接口会明确提示同步；同步成功后才允许融合两路结果。
+多主机只读副本需部署同一版本的 manifest 与倒排数据库；当前方案仍需唯一索引任务。
 
 ### 选择向量后端
 
@@ -113,6 +147,7 @@ python main.py --subject 数学 --grade 5
 
 # 索引管理
 python main.py --status          # 查看索引状态（不调用在线模型）
+python main.py --sync-keywords   # 从已有向量清单补建关键词倒排索引
 python main.py --rebuild-index   # 重建索引
 ```
 

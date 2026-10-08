@@ -1,4 +1,4 @@
-# 文件用途：实现中文 BM25、余弦相似度归一化与两者的加权融合排序。
+# 文件用途：实现中文 BM25、兼容分数融合与独立排名的加权 RRF。
 # 调用关系：vector_backends.py 调用本文件；本文件只做纯计算，不读文件或数据库。
 # 修改易踩坑：权重、分词或归一化变化会改变全部排序结果，必须同时更新配置与离线测试。
 """BM25 与向量余弦相似度的轻量混合评分工具。
@@ -214,3 +214,67 @@ def rank_documents_by_hybrid_score(
         )
     )
     return [document for _, _, document in ranked_documents[:k]]
+
+
+def reciprocal_rank_fusion(
+    rankings: Sequence[Sequence[Document]],
+    *,
+    weights: Sequence[float],
+    rank_constant: int = 60,
+    k: int = 20,
+) -> list[Document]:
+    """按分片 ID 融合独立排名；每路贡献为 weight / (常数 + 一基排名)。
+
+    同一路去重后再分配名次；零权重表示禁用该路。同分按 ID 稳定排序，
+    返回副本并附上 retrieval_rrf_score，不修改调用方的文档元数据。
+    """
+    if len(rankings) != len(weights):
+        raise ValueError("The number of RRF weights must match the rankings")
+    if (
+        isinstance(rank_constant, bool)
+        or not isinstance(rank_constant, int)
+        or rank_constant < 1
+    ):
+        raise ValueError("RRF rank_constant must be a positive integer")
+    if isinstance(k, bool) or not isinstance(k, int):
+        raise ValueError("RRF k must be an integer")
+
+    try:
+        validated_weights = [float(weight) for weight in weights]
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("RRF weights must be finite nonnegative numbers") from exc
+    if any(not math.isfinite(weight) or weight < 0 for weight in validated_weights):
+        raise ValueError("RRF weights must be finite nonnegative numbers")
+    if not any(weight > 0 for weight in validated_weights):
+        raise ValueError("At least one RRF weight must be positive")
+
+    contributions: dict[str, list[float]] = {}
+    documents_by_id: dict[str, Document] = {}
+    for ranking, weight in zip(rankings, validated_weights, strict=True):
+        if weight == 0:
+            continue
+        seen: set[str] = set()
+        for document in ranking:
+            chunk_id = document.metadata.get("chunk_id")
+            if not isinstance(chunk_id, str) or not chunk_id.strip():
+                raise ValueError("RRF documents must have a nonempty string chunk_id")
+            if chunk_id in seen:
+                continue
+            seen.add(chunk_id)
+            documents_by_id.setdefault(chunk_id, document)
+            contributions.setdefault(chunk_id, []).append(
+                weight / (rank_constant + len(seen))
+            )
+
+    scores = {
+        chunk_id: math.fsum(values)
+        for chunk_id, values in contributions.items()
+    }
+    ranked_ids = sorted(scores, key=lambda chunk_id: (-scores[chunk_id], chunk_id))
+    results: list[Document] = []
+    for chunk_id in ranked_ids[:max(k, 0)]:
+        document = documents_by_id[chunk_id]
+        metadata = dict(document.metadata)
+        metadata["retrieval_rrf_score"] = scores[chunk_id]
+        results.append(document.model_copy(update={"metadata": metadata}))
+    return results

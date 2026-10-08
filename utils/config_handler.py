@@ -3,6 +3,7 @@
 # 修改易踩坑：这里在导入时执行校验，新增必填项必须同步配置文件和测试，否则整个应用无法导入。
 """集中加载并校验 YAML 配置。"""
 
+import math
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -79,6 +80,39 @@ if "rerank" in knowledge_conf:
         ("enabled", "model", "candidate_k", "timeout"),
         "knowledge.yml:rerank",
     )
+require_keys(
+    knowledge_conf.get("hybrid_search") or {},
+    ("rrf_rank_constant", "vector_candidate_k", "bm25_candidate_k"),
+    "knowledge.yml:hybrid_search",
+)
+for key in ("rrf_rank_constant", "vector_candidate_k", "bm25_candidate_k"):
+    value = knowledge_conf["hybrid_search"][key]
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        raise ValueError(f"knowledge.yml:hybrid_search.{key} 必须是大于 0 的整数")
+for key in ("hybrid_vector_weight", "hybrid_bm25_weight"):
+    value = knowledge_conf[key]
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or not math.isfinite(value)
+        or value < 0
+    ):
+        raise ValueError(f"knowledge.yml:{key} 必须是有限的非负数")
+if knowledge_conf["hybrid_vector_weight"] + knowledge_conf["hybrid_bm25_weight"] <= 0:
+    raise ValueError("knowledge.yml:RRF 至少需要一路正权重")
+for key in ("bm25_k1", "bm25_b"):
+    value = knowledge_conf[key]
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or not math.isfinite(value)
+    ):
+        raise ValueError(f"knowledge.yml:{key} 必须是有限数")
+if knowledge_conf["bm25_k1"] <= 0:
+    raise ValueError("knowledge.yml:bm25_k1 必须是正数")
+if not 0 <= knowledge_conf["bm25_b"] <= 1:
+    raise ValueError("knowledge.yml:bm25_b 必须在 0 到 1 之间")
+
 if "chroma_server" in knowledge_conf:
     require_keys(
         knowledge_conf["chroma_server"],
