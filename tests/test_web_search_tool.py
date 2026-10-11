@@ -7,8 +7,10 @@ import os
 import unittest
 from unittest.mock import patch
 
+from agent.tools.call_limits import tool_call_budget_scope
 from agent.tools.web_search import (
     _format_tavily_results,
+    _local_knowledge_fallback,
     is_time_sensitive_question,
     sanitize_search_query,
     search_web,
@@ -165,6 +167,40 @@ class TavilyWebSearchTests(unittest.TestCase):
         self.assertNotIn("conversation_context", properties)
         self.assertNotIn("long_term_context", properties)
         self.assertNotIn("student_id", properties)
+
+    def test_web_fallback_shares_local_search_quota_and_cannot_bypass_it(self):
+        """已有四次检索后只能再回退两次，第七次不请求本地知识库。"""
+
+        limits = {"search_knowledge": 6, "calculate_expression": 6, "search_web": 6}
+        with (
+            tool_call_budget_scope(limits) as budget,
+            patch("agent.tools.web_search.qa_service.search_context", return_value="本地资料") as search,
+        ):
+            for _ in range(4):
+                self.assertTrue(budget.try_acquire("search_knowledge"))
+            first = _local_knowledge_fallback("三角形", "数学", "联网不可用")
+            second = _local_knowledge_fallback("三角形", "数学", "联网不可用")
+            blocked = _local_knowledge_fallback("三角形", "数学", "联网不可用")
+
+            self.assertEqual(search.call_count, 2)
+            self.assertEqual(budget.counts()["search_knowledge"], 6)
+            self.assertEqual(budget.counts()["calculate_expression"], 0)
+            self.assertEqual(budget.counts()["search_web"], 0)
+            self.assertIn("本地资料", first)
+            self.assertIn("本地资料", second)
+            self.assertNotIn("本地资料", blocked)
+
+    def test_failed_local_fallback_still_consumes_search_quota(self):
+        """本地回退实际开始后即占额度，即使检索服务失败也不退款。"""
+
+        with (
+            tool_call_budget_scope({"search_knowledge": 6}) as budget,
+            patch("agent.tools.web_search.qa_service.search_context", side_effect=RuntimeError("离线故障")) as search,
+        ):
+            result = _local_knowledge_fallback("三角形", "数学", "联网不可用")
+            search.assert_called_once_with("三角形", "数学")
+            self.assertEqual(budget.counts()["search_knowledge"], 1)
+            self.assertNotIn("离线故障", result)
 
 
 if __name__ == "__main__":

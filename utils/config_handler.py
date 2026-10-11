@@ -34,6 +34,64 @@ def require_keys(config: dict[str, Any], keys: tuple[str, ...], name: str) -> No
         raise ValueError(f"{name} 缺少配置项：{', '.join(missing)}")
 
 
+def validate_skills_config(config: Any) -> None:
+    """校验 Skill 路由和字符预算，新增角色与综合配置保持可选。"""
+
+    if not isinstance(config, dict):
+        raise ValueError("app.yml:skills 必须是对象")
+    require_keys(config, ("enabled", "max_instruction_chars", "subject_paths"), "app.yml:skills")
+    if not isinstance(config["enabled"], bool):
+        raise ValueError("app.yml:skills.enabled 必须是 true 或 false")
+    for key in ("max_instruction_chars", "max_combined_instruction_chars"):
+        value = config.get(key, 9000)
+        if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+            raise ValueError(f"app.yml:skills.{key} 必须是大于 0 的整数")
+    for key in ("subject_paths", "role_paths"):
+        mapping = config.get(key, {})
+        if not isinstance(mapping, dict) or any(
+            not isinstance(name, str) or not name.strip()
+            or not isinstance(path, str) or not path.strip()
+            for name, path in mapping.items()
+        ):
+            raise ValueError(f"app.yml:skills.{key} 必须是名称到非空文件路径的对象")
+    combined = config.get("combined_subjects", [])
+    if not isinstance(combined, list) or any(
+        not isinstance(subject, str) or subject == "综合"
+        or subject not in config["subject_paths"]
+        for subject in combined
+    ):
+        raise ValueError("app.yml:skills.combined_subjects 必须是已有 Skill 映射的非综合学科列表")
+
+
+DEFAULT_TOOL_CALL_LIMITS = {
+    "search_knowledge": 6,
+    "calculate_expression": 6,
+    "search_web": 6,
+}
+
+
+def validate_tool_call_limits(limits: Any) -> dict[str, int]:
+    """每种普通工具独立配置正整数上限，不接受总额或未知工具字段。"""
+
+    if not isinstance(limits, dict) or set(limits) != set(DEFAULT_TOOL_CALL_LIMITS):
+        raise ValueError(
+            "app.yml:agent.tool_call_limits 必须分别配置 "
+            "search_knowledge、calculate_expression、search_web，不能包含总额字段"
+        )
+    for name, limit in limits.items():
+        if isinstance(limit, bool) or not isinstance(limit, int) or limit < 1:
+            raise ValueError(f"app.yml:agent.tool_call_limits.{name} 必须是大于 0 的整数")
+    return dict(limits)
+
+
+def get_tool_call_limits() -> dict[str, int]:
+    """读取本轮工具限额；旧配置缺少该项时默认每种工具六次。"""
+
+    return validate_tool_call_limits(
+        app_conf["agent"].get("tool_call_limits", DEFAULT_TOOL_CALL_LIMITS)
+    )
+
+
 model_conf = load_yaml_config("config/model.yml")
 knowledge_conf = load_yaml_config("config/knowledge.yml")
 prompts_conf = load_yaml_config("config/prompts.yml")
@@ -245,12 +303,9 @@ require_keys(
     ("supported_subjects", "agent", "memory", "context"),
     "app.yml",
 )
+get_tool_call_limits()
 if "skills" in app_conf:
-    require_keys(
-        app_conf["skills"],
-        ("enabled", "max_instruction_chars", "subject_paths"),
-        "app.yml:skills",
-    )
+    validate_skills_config(app_conf["skills"])
 require_keys(
     app_conf["context"],
     (

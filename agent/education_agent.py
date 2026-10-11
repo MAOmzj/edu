@@ -1,4 +1,4 @@
-# 文件用途：提供 EducationAgent.answer() 稳定入口，内部运行“学科回答—审核—记忆”三子 Agent 工作流。
+# 文件用途：提供问答入口，协调学科、完整审核、第二次安全审核和记忆四个子 Agent。
 # 调用关系：memory/runtime.py 创建本类，app.py 与 main.py 调用；本文件调用 multi_agent 工具构造器、workflow、memory/store 和 model/factory。
 # 修改易踩坑：answer() 是对外唯一契约；Checkpoint 线程编号必须拼接 student_id 与 thread_id，不能只用其中一个。
 """小学生教育知识问答 Agent 的对外入口。
@@ -7,7 +7,7 @@
 
     参数校验 -> 登记会话 -> 准备 State -> 运行主协调图 -> 取出最终答案
 
-它本身不编写答案；学科、审核和记忆三个子 Agent 的先后顺序由 workflow.py 决定。
+它本身不编写答案；学科、完整审核、安全审核和记忆的先后顺序由 workflow.py 决定。
 
 上游调用者：memory/runtime.py（唯一创建者）、app.py（Web）、main.py（CLI）、测试。
 下游调用者：三个 build_* 子 Agent 工具、workflow.py 主协调图、memory/store.py、
@@ -28,6 +28,7 @@ from agent.multi_agent import (
     EducationMultiAgentWorkflow,
     build_memory_agent_tool,
     build_review_agent_tool,
+    build_safety_review_agent_tool,
     build_subject_agent_tool,
 )
 from agent.multi_agent.state import message_content_to_text
@@ -36,8 +37,21 @@ from model.factory import create_chat_model
 from utils.config_handler import app_conf
 
 
+class _WorkflowGraphHandle:
+    """兼容旧 invoke/get_state 入口；执行仍须经过按题建立限额的工作流。"""
+
+    def __init__(self, workflow: EducationMultiAgentWorkflow):
+        self._workflow = workflow
+
+    def invoke(self, state, config=None, **kwargs):
+        return self._workflow.invoke(state, config=config, **kwargs)
+
+    def __getattr__(self, name):
+        return getattr(self._workflow.graph, name)
+
+
 class EducationAgent:
-    """对外提供稳定 answer 接口，内部运行三个子 Agent Tool。"""
+    """对外提供稳定 answer 接口，内部协调四个专用子 Agent Tool。"""
 
     def __init__(
         self,
@@ -47,16 +61,17 @@ class EducationAgent:
         *,
         subject_tool: BaseTool | None = None,
         review_tool: BaseTool | None = None,
+        safety_review_tool: BaseTool | None = None,
         memory_tool: BaseTool | None = None,
     ):
-        """创建三个子 Agent Tool，并把它们交给主协调工作流。"""
+        """创建四个子 Agent Tool，第二次审核只交给独立安全 Agent。"""
 
         self.memory_store = memory_store
 
-        # 正常运行时三个 Tool 都需要同一个聊天模型。测试可以直接传入假 Tool，
+        # 四个专用 Agent 可以共用聊天模型；测试可注入四个 Tool 隔离在线调用。
         # 这样不需要 API Key，也不会访问在线模型。
-        # 调用下游：model/factory.py 的 create_chat_model()（底层是通义 qwen3-max）。
-        if subject_tool is None or review_tool is None or memory_tool is None:
+        # 调用下游：model/factory.py 的 create_chat_model()（DeepSeek 官方 API）。
+        if any(tool is None for tool in (subject_tool, review_tool, safety_review_tool, memory_tool)):
             model = model or create_chat_model()
 
         # 这里体现了“把子 Agent 当作 Tool”：build_* 先创建一个独立子 Agent，
@@ -64,14 +79,16 @@ class EducationAgent:
         # 调用下游：agent/multi_agent/subject_agent.py、review_agent.py、memory_agent.py。
         self.subject_tool = subject_tool or build_subject_agent_tool(model)
         self.review_tool = review_tool or build_review_agent_tool(model)
+        self.safety_review_tool = safety_review_tool or build_safety_review_agent_tool(model)
         self.memory_tool = memory_tool or build_memory_agent_tool(model)
 
         # Checkpointer 保存 LangGraph State（短期、多轮），memory_store 保存可查询的
         # 业务历史和跨会话长期记忆。两者职责不同，但正式运行时都落到 SQLite。
-        # 调用下游：agent/multi_agent/workflow.py 编译出主协调图（后续 answer() 调它）。
+        # 调用下游：workflow.py 编译主协调图，首审和二次安全审查互不混用。
         self.workflow = EducationMultiAgentWorkflow(
             subject_tool=self.subject_tool,
             review_tool=self.review_tool,
+            safety_review_tool=self.safety_review_tool,
             memory_tool=self.memory_tool,
             memory_store=memory_store,
             checkpointer=checkpointer or InMemorySaver(),
@@ -108,7 +125,7 @@ class EducationAgent:
         )
 
         # 保留 agent 属性，方便旧代码或调试代码继续调用底层 invoke/get_state。
-        self.agent = self.workflow.graph
+        self.agent = _WorkflowGraphHandle(self.workflow)
         self.context_manager = self.workflow.context_manager
 
     @staticmethod

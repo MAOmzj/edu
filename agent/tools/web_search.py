@@ -17,6 +17,9 @@ from urllib.parse import urlparse
 
 from langchain_core.tools import tool
 
+from agent.tools.call_limits import (
+    build_tool_limit_message, get_tool_call_budget, reserve_tool_call,
+)
 from agent.tools.education_tools import normalize_subject, qa_service
 from utils.config_handler import app_conf
 from utils.logger_handler import logger
@@ -237,6 +240,14 @@ def _invoke_tavily(query: str, config: dict[str, Any]) -> Any:
 def _local_knowledge_fallback(question: str, subject: str, reason: str) -> str:
     """联网不可用时重新读取本地知识，保证搜索失败不会中断回答流程。"""
 
+    # 直接调用 RAG 的回退也占检索额度，不能通过联网工具绕过本地检索上限。
+    if not reserve_tool_call("search_knowledge"):
+        budget = get_tool_call_budget()
+        assert budget is not None
+        limit = budget.limit_for("search_knowledge")
+        assert limit is not None
+        logger.warning("联网回退达到本轮本地检索上限（%s 次）", limit)
+        return f"{reason}\n{build_tool_limit_message('search_knowledge', limit)}"
     try:
         context = qa_service.search_context(question, normalize_subject(subject))
     except Exception as exc:

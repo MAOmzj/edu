@@ -12,16 +12,29 @@ supported_subjects:
 
 agent:
   recursion_limit: 12
-  # 初次审核不通过后最多重写一次，防止“回答—审核”无限循环。
+  # 首次完整审核不通过后最多重写一次；第二次由独立安全 Agent 审核，不再质量退回。
   max_review_retries: 1
+  # 每道题按工具名独立计数；初稿、完整审核、重写共享，不设置工具总额。
+  # 已执行但失败的调用仍占一次；新问题重新计数。
+  tool_call_limits:
+    search_knowledge: 6
+    calculate_expression: 6
+    search_web: 6
 
 # 教育 Skill 规定“怎样教学”，Tool 负责真正查询知识或执行计算。
-# 学科 Agent 只加载当前学科对应的 Skill，避免数学规则影响其他学科。
+# 单科只加载对应 Skill；综合加载三科并由现有问答 Agent 选择相关流程。
+# 角色 Skill 只提供给对应子 Agent，不增加模型调用或改变审核路由。
 skills:
   enabled: true
   max_instruction_chars: 6000
+  max_combined_instruction_chars: 9000
+  combined_subjects: [语文, 数学, 英语]
   subject_paths:
+    语文: skills/primary-chinese/SKILL.md
     数学: skills/primary-math/SKILL.md
+    英语: skills/primary-english/SKILL.md
+  role_paths:
+    learning_memory: skills/learning-memory/SKILL.md
 
 # 统一 Context Manager 的上下文预算。最近消息优先，较旧或低优先级内容先裁剪。
 context:

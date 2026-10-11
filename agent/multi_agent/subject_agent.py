@@ -22,7 +22,9 @@ from langchain_core.tools import BaseTool, tool
 from agent.context_manager import EducationContextManager
 from agent.multi_agent.state import final_ai_text
 from agent.tools.education_tools import calculate_expression, search_knowledge
-from agent.tools.middleware import log_before_model, monitor_tool
+from agent.tools.middleware import (
+    build_tool_call_limit_prompt, limit_available_tools, log_before_model, monitor_tool,
+)
 from agent.tools.web_search import is_web_search_enabled, search_web
 
 
@@ -38,9 +40,12 @@ def create_subject_agent(model: BaseChatModel):
         tools.append(search_web)
     return create_agent(
         model=model,
-        system_prompt=EducationContextManager.build_subject_system_prompt(),
+        system_prompt=(
+            EducationContextManager.build_subject_system_prompt()
+            + build_tool_call_limit_prompt([tool.name for tool in tools])
+        ),
         tools=tools,
-        middleware=[monitor_tool, log_before_model],
+        middleware=[monitor_tool, log_before_model, limit_available_tools],
         name="subject_qa_agent",
     )
 
