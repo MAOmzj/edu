@@ -1,0 +1,48 @@
+# 文件用途：配置Qwen3.8-27B的小学多学科教学回答SFT，默认使用NF4 QLoRA。
+# 调用关系：train_education.py与run_education_finetune.py读取；不影响已部署模型配置。
+# 修改易踩坑：必须使用完整官方未量化底座与正式教育数据；示例和摘要数据不能充当教学训练集。
+# 配置读取链：run_education_finetune.main → load_config；下游训练进程的 read_settings → load_config 再读同一文件。
+# 下方注释写明参数的下游使用者；YAML 负责提供值，实际执行动作的是对应 Python 函数。
+# 使用者：preparation_report/validate_base_model 检查目录；run_training → from_pretrained 加载此基座。
+# 完整27B的配置、分词器与18个权重分片统一存放于独立基座目录，加载时使用此目录。
+model_path: /root/MAOMI/models/Qwen3.8-27B
+# 使用者：run_education_finetune.main → subprocess.Popen，用这个解释器运行 scripts/train_education.py。
+training_python: /root/MAOMI/envs/education-training/bin/python
+# 使用者：train_education.read_data → load_records，读取2500条问题及参考回答供训练。
+train_file: /root/MAOMI/training/education-dataset-v2/train.jsonl
+# 使用者：read_data → load_records 读取；run_training → Trainer 在每轮末用这些数据计算验证损失。
+validation_file: /root/MAOMI/training/education-dataset-v2/validation.jsonl
+# 使用者：run_training → TrainingArguments/保存函数；最后的适配器位于此目录下的 adapter/。
+output_dir: /root/MAOMI/training/education-lora-v3
+# 使用者：run_training；qlora 分支调用 BitsAndBytesConfig，以 NF4 4bit 加载基座并只更新 LoRA。
+method: qlora
+# 使用者：validate_split/encode_record → prompt_messages；样本没有 system 消息时补入这段指令。
+instruction: >-
+  你是面向小学学生的学习助手，帮助学习语文、数学、英语与科学。
+  使用适合儿童年龄的中文，简明、耐心、准确；英语学习可给出必要的英文与中文解释。
+  直接回答学习问题，不加空泛夸赞、冗长问候或表情；一般用一到三个短段，复杂题按需要展开。
+  根据问题分步骤讲解，鼓励学生理解理由；必要时先给提示，再给清楚的结论。
+  题目缺少条件或存在歧义时先追问，不擅自补造题面；学生出错时温和说明并纠正。
+  有多个错误时分别说明，不把计算方法或公式错误说成只是单位错误；不把错误计算称为正确。
+  不捏造教材内容、检索结果或引用来源，不声称做过未执行的工具操作。
+  只输出学生可见的教学回答，不输出内部推理标签、审核JSON或对话摘要。
+# 使用者：main.encode → encode_record；限制“系统指令+对话+目标回答+EOS”的总 token 数，超长报错。
+max_seq_length: 2048
+# 使用者：run_training → TrainingArguments.num_train_epochs；1 表示完整学习训练集一遍。
+epochs: 3
+# 使用者：run_training → TrainingArguments.learning_rate；优化器更新 LoRA 时使用的学习率。
+learning_rate: 0.00005
+# 使用者：run_training → TrainingArguments.per_device_train_batch_size；单卡每次处理1条样本。
+batch_size: 4
+# 使用者：run_training → TrainingArguments.gradient_accumulation_steps；通常累积8次后更新一次参数。
+gradient_accumulation_steps: 2
+# 使用者：run_training → LoraConfig.r；决定 LoRA 低秩矩阵的规模。
+lora_r: 16
+# 使用者：run_training → LoraConfig.lora_alpha；控制 LoRA 增量的缩放。
+lora_alpha: 32
+# 使用者：run_training → LoraConfig.lora_dropout；LoRA 分支训练时的随机丢弃比例。
+lora_dropout: 0.05
+# 使用者：run_training → build_training_arguments → TrainingArguments.warmup_steps；0.05按当前库接口表示前5%预热。
+warmup_ratio: 0.05
+# 使用者：run_training → set_seed 和 TrainingArguments.seed；固定部分随机过程，方便复现实验。
+seed: 42

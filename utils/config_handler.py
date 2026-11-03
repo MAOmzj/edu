@@ -4,6 +4,7 @@
 """集中加载并校验 YAML 配置。"""
 
 import math
+import os
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -34,6 +35,148 @@ def require_keys(config: dict[str, Any], keys: tuple[str, ...], name: str) -> No
         raise ValueError(f"{name} 缺少配置项：{', '.join(missing)}")
 
 
+DEFAULT_SUMMARY_MODEL_CONFIG = {
+    "enabled": False,
+    "provider": "local_vllm",
+    "model_name": "education-summary",
+    "model_path": "/root/MAOMI/models/Qwen3-4B",
+    "base_url": "http://127.0.0.1:8002/v1",
+    "temperature": 0.7,
+    "request_timeout": 60,
+    "max_retries": 0,
+    "max_tokens": 2048,
+    "enable_thinking": False,
+}
+
+
+def validate_summary_model_config(config: Any) -> dict[str, Any]:
+    """补齐并校验可选摘要模型配置；旧配置缺少整个对象时保持关闭。"""
+
+    if not isinstance(config, dict):
+        raise ValueError("model.yml:summary 必须是对象")
+    options = {**DEFAULT_SUMMARY_MODEL_CONFIG, **config}
+    for key in ("enabled", "enable_thinking"):
+        if not isinstance(options[key], bool):
+            raise ValueError(f"model.yml:summary.{key} 必须是 true 或 false")
+    for key in ("provider", "model_name", "model_path", "base_url"):
+        value = options[key]
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"model.yml:summary.{key} 必须是非空字符串")
+        options[key] = value.strip()
+    options["provider"] = options["provider"].lower()
+    if options["provider"] != "local_vllm":
+        raise ValueError("model.yml:summary.provider 当前只支持 local_vllm")
+    endpoint = urlparse(options["base_url"])
+    if endpoint.scheme not in {"http", "https"} or not endpoint.hostname:
+        raise ValueError("model.yml:summary.base_url 必须是有效的 HTTP(S) URL")
+    if endpoint.username is not None or endpoint.password is not None:
+        raise ValueError("model.yml:summary.base_url 不能包含凭据，请使用 LOCAL_VLLM_API_KEY")
+    try:
+        port = endpoint.port
+    except ValueError as exc:
+        raise ValueError("model.yml:summary.base_url 端口必须在 1 到 65535 之间") from exc
+    if port is not None and not 1 <= port <= 65_535:
+        raise ValueError("model.yml:summary.base_url 端口必须在 1 到 65535 之间")
+    for key in ("temperature", "request_timeout"):
+        value = options[key]
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+        ):
+            raise ValueError(f"model.yml:summary.{key} 必须是有限数值")
+    if not 0 <= options["temperature"] <= 2:
+        raise ValueError("model.yml:summary.temperature 必须在 0 到 2 之间")
+    if options["request_timeout"] <= 0:
+        raise ValueError("model.yml:summary.request_timeout 必须大于 0")
+    for key, minimum in (("max_retries", 0), ("max_tokens", 1)):
+        value = options[key]
+        if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
+            raise ValueError(f"model.yml:summary.{key} 必须是大于等于 {minimum} 的整数")
+    return options
+
+
+def get_summary_model_config() -> dict[str, Any]:
+    """读取独立摘要配置，并校验环境开关、服务地址和服务模型名覆盖。"""
+
+    options = validate_summary_model_config(model_conf.get("summary", {}))
+    enabled = os.getenv("EDUCATION_SUMMARY_ENABLED")
+    if enabled is not None:
+        normalized = enabled.strip().lower()
+        if normalized in {"1", "true", "yes", "on"}:
+            options["enabled"] = True
+        elif normalized in {"0", "false", "no", "off"}:
+            options["enabled"] = False
+        else:
+            raise ValueError("EDUCATION_SUMMARY_ENABLED 必须是 true/false 或 1/0")
+    for key, env_name in (
+        ("base_url", "EDUCATION_SUMMARY_BASE_URL"),
+        ("model_name", "EDUCATION_SUMMARY_MODEL_NAME"),
+    ):
+        override = os.getenv(env_name)
+        if override is not None:
+            options[key] = override
+    return validate_summary_model_config(options)
+
+
+def validate_skills_config(config: Any) -> None:
+    """校验 Skill 路由和字符预算，新增角色与综合配置保持可选。"""
+
+    if not isinstance(config, dict):
+        raise ValueError("app.yml:skills 必须是对象")
+    require_keys(config, ("enabled", "max_instruction_chars", "subject_paths"), "app.yml:skills")
+    if not isinstance(config["enabled"], bool):
+        raise ValueError("app.yml:skills.enabled 必须是 true 或 false")
+    for key in ("max_instruction_chars", "max_combined_instruction_chars"):
+        value = config.get(key, 9000)
+        if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+            raise ValueError(f"app.yml:skills.{key} 必须是大于 0 的整数")
+    for key in ("subject_paths", "role_paths"):
+        mapping = config.get(key, {})
+        if not isinstance(mapping, dict) or any(
+            not isinstance(name, str) or not name.strip()
+            or not isinstance(path, str) or not path.strip()
+            for name, path in mapping.items()
+        ):
+            raise ValueError(f"app.yml:skills.{key} 必须是名称到非空文件路径的对象")
+    combined = config.get("combined_subjects", [])
+    if not isinstance(combined, list) or any(
+        not isinstance(subject, str) or subject == "综合"
+        or subject not in config["subject_paths"]
+        for subject in combined
+    ):
+        raise ValueError("app.yml:skills.combined_subjects 必须是已有 Skill 映射的非综合学科列表")
+
+
+DEFAULT_TOOL_CALL_LIMITS = {
+    "search_knowledge": 6,
+    "calculate_expression": 6,
+    "search_web": 6,
+}
+
+
+def validate_tool_call_limits(limits: Any) -> dict[str, int]:
+    """每种普通工具独立配置正整数上限，不接受总额或未知工具字段。"""
+
+    if not isinstance(limits, dict) or set(limits) != set(DEFAULT_TOOL_CALL_LIMITS):
+        raise ValueError(
+            "app.yml:agent.tool_call_limits 必须分别配置 "
+            "search_knowledge、calculate_expression、search_web，不能包含总额字段"
+        )
+    for name, limit in limits.items():
+        if isinstance(limit, bool) or not isinstance(limit, int) or limit < 1:
+            raise ValueError(f"app.yml:agent.tool_call_limits.{name} 必须是大于 0 的整数")
+    return dict(limits)
+
+
+def get_tool_call_limits() -> dict[str, int]:
+    """读取本轮工具限额；旧配置缺少该项时默认每种工具六次。"""
+
+    return validate_tool_call_limits(
+        app_conf["agent"].get("tool_call_limits", DEFAULT_TOOL_CALL_LIMITS)
+    )
+
+
 model_conf = load_yaml_config("config/model.yml")
 knowledge_conf = load_yaml_config("config/knowledge.yml")
 prompts_conf = load_yaml_config("config/prompts.yml")
@@ -49,6 +192,8 @@ require_keys(
     ),
     "model.yml",
 )
+if "summary" in model_conf:
+    validate_summary_model_config(model_conf["summary"])
 require_keys(
     knowledge_conf,
     (
@@ -245,12 +390,9 @@ require_keys(
     ("supported_subjects", "agent", "memory", "context"),
     "app.yml",
 )
+get_tool_call_limits()
 if "skills" in app_conf:
-    require_keys(
-        app_conf["skills"],
-        ("enabled", "max_instruction_chars", "subject_paths"),
-        "app.yml:skills",
-    )
+    validate_skills_config(app_conf["skills"])
 require_keys(
     app_conf["context"],
     (

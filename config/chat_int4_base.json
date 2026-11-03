@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-19T03:19:59.230562+00:00",
+  "provenance_limit": "Reviewed candidate provenance and file identity only; this manifest does not prove that the quantized weights were numerically derived from the source weights.",
+  "paths": {
+    "quantized": "/root/autodl-tmp/MAOMI/models/Qwen3.8-27B-RTN-INT4",
+    "source": "/root/autodl-tmp/MAOMI/models/Qwen3.8-27B",
+    "adapter": "/root/autodl-tmp/MAOMI/training/education-lora-v2/adapter"
+  },
+  "evidence": {
+    "path": "/root/autodl-tmp/MAOMI/models/Qwen3.8-27B-RTN-INT4/quantization_provenance.json",
+    "size": 237324,
+    "sha256": "6ec9289880411285657e8c42ad267f6a7effd8d17126a16476b69c0206874168"
+  },
+  "quantized": {
+    "files_sha256": {
+      "config.json": "e0dc086cfb54a01960e95f38b5d66e04b2726151a8efff2470d7d0ebdd83ced9",
+      "model.safetensors.index.json": "fd8036280ab75098f5eb5ec82801079047d5a55583be26acdfc04ca796778a96",
+      "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+      "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+      "merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d"
+    },
+    "shards": {
+      "model-00001-of-00006.safetensors": {
+        "size": 2730821840,
+        "mtime_ns": 1792379797492468558,
+        "header_sha256": "70f0ef8e64d8e0a504736aa9bbf674b6cb38e5e0723564e4ff53496f28bcd694"
+      },
+      "model-00002-of-00006.safetensors": {
+        "size": 4255854528,
+        "mtime_ns": 1792379801838450426,
+        "header_sha256": "7af9923fb4c961d16d5dc9addb586fc523d59115678a90fc57762e2019cb3d2f"
+      },
+      "model-00003-of-00006.safetensors": {
+        "size": 4292374808,
+        "mtime_ns": 1792379809506418434,
+        "header_sha256": "c610568da12b401ac2f1ad39802c3c9e91e5cb2c30c412a77fdcc9de59d8939c"
+      },
+      "model-00004-of-00006.safetensors": {
+        "size": 4263849112,
+        "mtime_ns": 1792379816673388533,
+        "header_sha256": "1fd58a865e1f714d574775ac2325bdcfc6be74f7f68e6bbd7cdf4c108a040da8"
+      },
+      "model-00005-of-00006.safetensors": {
+        "size": 2082903088,
+        "mtime_ns": 1792379822441364469,
+        "header_sha256": "1821c03a45f4dd2bdb89d5ae3e4e14fcaf9b46a27a9d19a551da0b278fa417f8"
+      },
+      "model-00006-of-00006.safetensors": {
+        "size": 3392197344,
+        "mtime_ns": 1792379824874354318,
+        "header_sha256": "175ef82a06309dc2f737c914fcd2e5d10255814f38a7aa09fe631d6f7ae34556"
+      }
+    }
+  },
+  "source": {
+    "files_sha256": {
+      "config.json": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+      "model.safetensors.index.json": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+      "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+      "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+      "merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d"
+    },
+    "shards": {
+      "model-00001-of-00018.safetensors": {
+        "size": 3966730552,
+        "mtime_ns": 1792208683934256383,
+        "header_sha256": "f4cbd9978d80810a0e91ff1b9eee98afb230fdc94ef59550954079df3752ca05"
+      },
+      "model-00002-of-00018.safetensors": {
+        "size": 3043080328,
+        "mtime_ns": 1792208030763826046,
+        "header_sha256": "712e885527c27c46d257c9cc17858f38ea78c2b795501c2de511c77f0d21f5f7"
+      },
+      "model-00003-of-00018.safetensors": {
+        "size": 2542796952,
+        "mtime_ns": 1792207985761017801,
+        "header_sha256": "b8f9a3cc0294c614390b5722494dcea8082f83c5cbf56da05b8c8f37c4bbe1fb"
+      },
+      "model-00004-of-00018.safetensors": {
+        "size": 3988973152,
+        "mtime_ns": 1792208032285819564,
+        "header_sha256": "ba99fbe75f726a370bae45f56c26b7cca9d4d04c2bc0b985f85a759f86f58e4a"
+      },
+      "model-00005-of-00018.safetensors": {
+        "size": 2099339864,
+        "mtime_ns": 1792208650328377210,
+        "header_sha256": "014a358848b7d5f734988922825b025a73be7d9ac1256bd7cc194fcbfd247cb9"
+      },
+      "model-00006-of-00018.safetensors": {
+        "size": 3979553696,
+        "mtime_ns": 1792208974742200798,
+        "header_sha256": "fcca93799f009642c232f0b577dc5508771a5646f443c2c2e9ea3981b7101e98"
+      },
+      "model-00007-of-00018.safetensors": {
+        "size": 2108759344,
+        "mtime_ns": 1792208964786243137,
+        "header_sha256": "53aae8c12ad2498d212fd3e85c167f80338b0e4b8a9239cce43c675e89fb9c8a"
+      },
+      "model-00008-of-00018.safetensors": {
+        "size": 3979553696,
+        "mtime_ns": 1792208955232283766,
+        "header_sha256": "6fca806f2ec923543cb9d256b62a97e61efaaa91ae55ac76dd770ede89626f99"
+      },
+      "model-00009-of-00018.safetensors": {
+        "size": 2108759344,
+        "mtime_ns": 1792208852883668224,
+        "header_sha256": "85728ac217f564d40921ad9fbc3115d7b4dd974fdddecb119c6131ae02dc6356"
+      },
+      "model-00010-of-00018.safetensors": {
+        "size": 3979553696,
+        "mtime_ns": 1792209126222539375,
+        "header_sha256": "90f7d04c3c049625f3b87aabe684e9dc41e1338edcf3a52c8691a3fedb4def35"
+      },
+      "model-00011-of-00018.safetensors": {
+        "size": 2108759344,
+        "mtime_ns": 1792209088856704171,
+        "header_sha256": "76511c9f8694b89ab67b257754313d166f6cc1f8f65b1d8245d63d1a17e8fa72"
+      },
+      "model-00012-of-00018.safetensors": {
+        "size": 3979553696,
+        "mtime_ns": 1792209730777645759,
+        "header_sha256": "b3c2a0a542f840a5fb81b0a595a3e76c47ad9d8dcb75b4146ba034bec48c6624"
+      },
+      "model-00013-of-00018.safetensors": {
+        "size": 2108759344,
+        "mtime_ns": 1792209142644468380,
+        "header_sha256": "fda125bcd2add706130665454e60ff215c02008d502690222bc91d007d809b3d"
+      },
+      "model-00014-of-00018.safetensors": {
+        "size": 3979553696,
+        "mtime_ns": 1792209586106619148,
+        "header_sha256": "a4fb86312f6d19b2c875397cb1332eb0d0509ee87ac7d071ab8136ad39900a35"
+      },
+      "model-00015-of-00018.safetensors": {
+        "size": 2108759344,
+        "mtime_ns": 1792209512967922963,
+        "header_sha256": "fbfcdbe24b153a09d21fb4a01af24db550cb3d5be61aa83de16ff1bb278932f1"
+      },
+      "model-00016-of-00018.safetensors": {
+        "size": 3979564040,
+        "mtime_ns": 1792209740161879519,
+        "header_sha256": "8e34d4718e9757344063700d85ee3ee62222b97dbacc11864d8de862a835d38d"
+      },
+      "model-00017-of-00018.safetensors": {
+        "size": 2108759344,
+        "mtime_ns": 1792209657455348546,
+        "header_sha256": "4d3fbaeb838aed16121dcc01fe50b3721b30bdb303be13b03b05aecd4b2dc637"
+      },
+      "model-00018-of-00018.safetensors": {
+        "size": 3392197344,
+        "mtime_ns": 1792209777462040041,
+        "header_sha256": "175ef82a06309dc2f737c914fcd2e5d10255814f38a7aa09fe631d6f7ae34556"
+      }
+    }
+  },
+  "adapter_files_sha256": {
+    "adapter_config.json": "62bb0c87f7c951f76a1b0378977b4a1a0bf269c5e9a72763babc843a3ae3169f",
+    "adapter_model.safetensors": "3af33da94bbff39d1a5ccfc74c990ef069daff4962938d862a943f9d7a6b9bbb"
+  }
+}

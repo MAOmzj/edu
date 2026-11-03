@@ -26,6 +26,7 @@ class ProjectContentTests(unittest.TestCase):
         files.extend((project_root / "web").rglob("*.js"))
         files.extend((project_root / "web").rglob("*.css"))
         files.extend((project_root / "prompts").glob("*.txt"))
+        files.extend((project_root / "skills").glob("*/SKILL.md"))
         files.extend(
             [
                 project_root / "app.py",
@@ -35,7 +36,6 @@ class ProjectContentTests(unittest.TestCase):
                 project_root / "requirements.txt",
                 project_root / "README.md",
                 project_root / "data/knowledge/README.md",
-                project_root / "skills/primary-math/SKILL.md",
                 project_root / "skills/primary-math/agents/openai.yaml",
             ]
         )

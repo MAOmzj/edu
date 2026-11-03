@@ -26,7 +26,7 @@ from typing import Annotated, Any, Literal, TypeVar, TypedDict
 
 from langchain_core.messages import AIMessage, AnyMessage
 from langgraph.graph.message import add_messages
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 MemoryType = Literal[
@@ -47,8 +47,34 @@ class ReviewResult(BaseModel):
     feedback: str = Field(description="给学科 Agent 的明确修改意见")
     corrected_answer: str | None = Field(
         default=None,
-        description="多次审核仍不通过时可使用的安全修正版",
+        description="审核员建议稿，不能直接作为最终安全兜底输出",
     )
+
+
+SafetyRiskCategory = Literal[
+    "dangerous_instructions", "self_harm", "sexual_content", "violence",
+    "hate_harassment", "privacy_leak", "harmful_advice",
+]
+
+
+class SafetyReviewResult(BaseModel):
+    """第二次审核仅返回安全结论，普通质量字段不参与放行判断。"""
+
+    model_config = ConfigDict(extra="ignore")
+    safety_passed: bool = Field(strict=True, description="没有安全风险则为 true")
+    risk_categories: list[SafetyRiskCategory] = Field(default_factory=list, max_length=7)
+    feedback: str = Field(min_length=1, max_length=1200, description="安全结论或具体风险依据")
+
+    @model_validator(mode="after")
+    def validate_safety_conclusion(self) -> "SafetyReviewResult":
+        """拒绝矛盾结论和没有风险依据的阻断，不把质量问题当作安全类别。"""
+        if not self.feedback.strip():
+            raise ValueError("安全审核反馈不能为空白")
+        if self.safety_passed and self.risk_categories:
+            raise ValueError("安全通过时不能同时报告风险类别")
+        if not self.safety_passed and not self.risk_categories:
+            raise ValueError("安全不通过时必须提供明确风险类别")
+        return self
 
 
 class MemoryCandidate(BaseModel):
@@ -96,10 +122,13 @@ class EducationWorkflowState(TypedDict, total=False):
     # 学科 Agent 和审核 Agent 依次写入的中间结果。
     draft_answer: str
     approved: bool
-    review_score: int
+    review_score: int | None
     review_feedback: str
     corrected_answer: str
     review_attempts: int
+    review_mode: Literal["full", "safety_only"]
+    safety_passed: bool | None
+    safety_review_error: bool
 
     # 最终回答和记忆 Agent 提取的候选记忆。
     final_answer: str

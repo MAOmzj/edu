@@ -1,0 +1,10 @@
+# 文件用途：安装Qwen3.8/qwen3_5教学SFT的独立环境依赖。
+# 调用关系：只在/root/MAOMI/envs/education-training安装；训练入口读取这些库。
+# 修改易踩坑：不要安装进推理环境；PyTorch需支持本机CUDA；升级后先做短训练验证。
+torch>=2.13,<2.14
+transformers==5.17.0
+peft==0.21.2
+accelerate==1.15.0
+bitsandbytes==0.50.2
+PyYAML>=6,<7
+safetensors>=0.6

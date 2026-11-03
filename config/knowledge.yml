@@ -3,8 +3,9 @@
 # 修改易踩坑：切分、模型、维度或后端路径变化后要重建索引；BM25与向量权重之和应保持合理。
 collection_name: primary_education
 
-# 默认仍通过 HTTP 访问独立 Chroma；可用环境变量切到 SQLite 或 Qdrant。
-vector_backend: qdrant
+# 本机没有 Docker，因此默认使用 Chroma 的内嵌持久化模式（下方 mode: persistent），
+# 不需要任何独立服务；也可用环境变量 EDUCATION_VECTOR_BACKEND 切到 sqlite 或 qdrant。
+vector_backend: chroma
 
 # 三种后端使用独立的数据和清单，切换时不会互相误判为已经完成索引。
 sqlite_database_path: storage/knowledge_vectors.sqlite3
@@ -14,7 +15,8 @@ chroma_manifest_path: storage/index_manifest_chroma.json
 qdrant_manifest_path: storage/index_manifest_qdrant.json
 
 chroma_server:
-  mode: http
+  # persistent 表示直接用进程内的 PersistentClient 读写本地目录，无需独立服务。
+  mode: persistent
   host: 127.0.0.1
   port: 8000
   ssl: false
@@ -82,8 +84,9 @@ hybrid_search:
 # 开启后：两路候选经 RRF 保留 candidate_k 条，再调用 Rerank，最终返回 k 条。
 # 需要 .env 中配置 DASHSCOPE_API_KEY；Rerank 失败时自动回退到原混合排序结果。
 rerank:
-  # 生产试运行启用第二阶段精排；缺少 Key、超时或服务异常时会回退混合排序。
-  enabled: true
+  # 本机全离线部署，精排依赖阿里云百炼 Key，因此默认关闭；两路加权 RRF 仍然生效。
+  # 需要重新开启时，除了改回 true，还要在 .env 中配置 DASHSCOPE_API_KEY。
+  enabled: false
   model: gte-rerank
   candidate_k: 20
   timeout: 8

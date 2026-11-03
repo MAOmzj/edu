@@ -2,6 +2,7 @@
 # 调用关系：unittest 调用本文件；本文件调用 rag/vector_store.py 与 vector_backends.py。
 # 修改易踩坑：使用假 Embedding 保持离线；所有临时索引、清单和连接都要在测试后释放。
 import json
+import os
 import sqlite3
 import unittest
 import warnings
@@ -22,6 +23,7 @@ from rag.vector_backends import (
     SQLiteVectorBackend,
 )
 from rag.vector_store import EducationVectorStore
+from utils.config_handler import knowledge_conf
 
 
 class KeywordEmbeddings(Embeddings):
@@ -679,14 +681,26 @@ class VectorStoreTests(unittest.TestCase):
         store = EducationVectorStore(backend_name="sqlite")
         status = store.status()
         self.assertEqual(status["backend"], "sqlite")
-        self.assertEqual(
-            status["retrieval_mode"],
-            "weighted_rrf_aliyun_rerank",
-        )
+        # retrieval_mode 是 rerank.enabled 的映射结果。本项目既可离线（关闭精排）
+        # 也可接百炼精排，因此这里固定两种取值分别验证映射，不依赖当前默认配置。
+        for enabled, expected_mode in (
+            (True, "weighted_rrf_aliyun_rerank"),
+            (False, "weighted_rrf"),
+        ):
+            with self.subTest(rerank_enabled=enabled), patch.dict(
+                knowledge_conf["rerank"], {"enabled": enabled}
+            ):
+                mode = EducationVectorStore(
+                    backend_name="sqlite"
+                ).status()["retrieval_mode"]
+            self.assertEqual(mode, expected_mode)
         self.assertTrue(status["storage_path"].endswith("knowledge_vectors.sqlite3"))
         self.assertEqual(status["persist_directory"], status["storage_path"])
 
-        chroma_status = EducationVectorStore(backend_name="chroma").status()
+        # chroma 的状态字段随部署模式变化：这里固定成 http 模式，验证独立服务
+        # 场景下的地址与候选参数；内嵌 persistent 模式另有用例覆盖。
+        with patch.dict(os.environ, {"CHROMA_MODE": "http"}):
+            chroma_status = EducationVectorStore(backend_name="chroma").status()
         self.assertEqual(chroma_status["backend"], "chroma")
         self.assertEqual(chroma_status["storage_path"], "http://127.0.0.1:8000")
         self.assertEqual(chroma_status["chroma_server"]["mode"], "http")

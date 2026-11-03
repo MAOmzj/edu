@@ -1,0 +1,9 @@
+# 文件用途：声明独立摘要微调与 LoRA 合并环境的依赖，不改变线上推理环境。
+# 调用关系：训练专用 Python 环境执行 pip install -r requirements-summary-training.txt。
+# 修改易踩坑：不要装入 vllm-env；固定 Transformers/PEFT 接口，CUDA 版 torch 要与驱动兼容。
+torch>=2.6,<3
+transformers==4.57.1
+peft==0.17.1
+accelerate>=1.10,<2
+safetensors>=0.5,<1
+PyYAML>=6,<7

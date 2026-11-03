@@ -12,35 +12,57 @@ supported_subjects:
 
 agent:
   recursion_limit: 12
-  # 初次审核不通过后最多重写一次，防止“回答—审核”无限循环。
+  # 首次完整审核不通过后最多重写一次；第二次由独立安全 Agent 审核，不再质量退回。
   max_review_retries: 1
+  # 每道题按工具名独立计数；初稿、完整审核、重写共享，不设置工具总额。
+  # 已执行但失败的调用仍占一次；新问题重新计数。
+  # 本机 vLLM 上下文窗口只有 16384 token（scripts/serve.py 的 --max-model-len）：
+  # search_knowledge / search_web 每次会把约 2000 字符资料写进上下文，上一轮实测
+  # 连续约 12 次检索就会超出窗口、让整轮问答失败，因此重资料工具合计收到 5 次，
+  # 留 2 倍以上余量；calculate_expression 结果只有几十字符，不受本项限制。
+  tool_call_limits:
+    search_knowledge: 4
+    calculate_expression: 6
+    search_web: 1
 
 # 教育 Skill 规定“怎样教学”，Tool 负责真正查询知识或执行计算。
-# 学科 Agent 只加载当前学科对应的 Skill，避免数学规则影响其他学科。
+# 单科只加载对应 Skill；综合加载三科并由现有问答 Agent 选择相关流程。
+# 角色 Skill 只提供给对应子 Agent，不增加模型调用或改变审核路由。
 skills:
   enabled: true
   max_instruction_chars: 6000
+  max_combined_instruction_chars: 9000
+  combined_subjects: [语文, 数学, 英语]
   subject_paths:
+    语文: skills/primary-chinese/SKILL.md
     数学: skills/primary-math/SKILL.md
+    英语: skills/primary-english/SKILL.md
+  role_paths:
+    learning_memory: skills/learning-memory/SKILL.md
 
 # 统一 Context Manager 的上下文预算。最近消息优先，较旧或低优先级内容先裁剪。
+# 本机 vLLM 上下文窗口为 16384 token（scripts/serve.py 的 --max-model-len）。学科 Agent
+# 的 System Prompt、Skill（综合三份约 5960 字符）和工具 schema 已占用数千 token，
+# 中文每字约 1 token，因此这里把预算收紧到 4000 字符，避免请求超出窗口被 vLLM 拒绝。
 context:
   # Prompt 中最多选择的最近原始消息数量。
-  recent_message_limit: 12
-  max_conversation_chars: 8000
-  max_long_term_chars: 2000
+  recent_message_limit: 8
+  max_conversation_chars: 4000
+  max_long_term_chars: 1200
   max_review_feedback_chars: 1200
-  # 单机生产基线：约 12 轮问答或会话文字超过 8000 字符时触发增量摘要。
-  # 工作流在当前学生问题已经进入、助手尚未回答时执行压缩，因此保留 11 条
-  # 可覆盖“最近 5 轮完整问答 + 当前问题”，避免从问答对中间截断。
+  # 约 8 轮问答或会话文字超过 4000 字符时触发增量摘要。工作流在当前学生问题
+  # 已经进入、助手尚未回答时执行压缩，因此保留 7 条可覆盖“最近 3 轮完整问答
+  # + 当前问题”，避免从问答对中间截断。
   summary_enabled: true
-  summary_trigger_messages: 24
-  summary_keep_recent_messages: 11
-  summary_trigger_chars: 8000
-  max_summary_chars: 2000
+  summary_trigger_messages: 16
+  summary_keep_recent_messages: 7
+  summary_trigger_chars: 4000
+  max_summary_chars: 1200
 
 # Tavily 只补充本地知识库缺少的资料和时效信息，不替代本地 RAG。
 web_search:
+  # 保持开启：本机没有 TAVILY_API_KEY 时，search_web 内部会自动回退到本地知识库，
+  # 不会中断回答。配上 Key 后即可真正联网，无需改这里的配置。
   enabled: true
   # 审核 Agent 是否也能联网。默认关闭可减少延迟和 Tavily 调用次数。
   review_enabled: false

@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 
 from model.factory import (
+    create_chat_model,
     create_embedding_model,
     require_dashscope_api_key,
     require_deepseek_api_key,
@@ -77,6 +78,26 @@ class ModelFactoryTests(unittest.TestCase):
         with patch.dict(os.environ, {"DEEPSEEK_API_KEY": ""}):
             with self.assertRaisesRegex(EnvironmentError, "DEEPSEEK_API_KEY"):
                 require_deepseek_api_key()
+
+    def test_local_chat_and_embedding_clients_ignore_external_proxy(self):
+        """配置了不可达代理时，本地客户端仍显式选择直连；此处只检查配置不发请求。"""
+        with (
+            patch.dict(os.environ, {
+                "EDUCATION_CHAT_PROVIDER": "local_vllm",
+                "EDUCATION_EMBEDDING_PROVIDER": "local_vllm",
+                "HTTP_PROXY": "http://127.0.0.1:9",
+                "HTTPS_PROXY": "http://127.0.0.1:9",
+                "OPENAI_PROXY": "http://127.0.0.1:9",
+            }),
+            patch.dict(model_conf, {"embedding_model_name": "qwen3-embedding"}),
+        ):
+            # 下游工厂构造 OpenAI/httpx 客户端，检查同步和异步请求都不会继承代理。
+            chat = create_chat_model()
+            embeddings = create_embedding_model()._delegate
+            for client in (chat, embeddings):
+                self.assertFalse(client.http_client._trust_env)
+                self.assertFalse(client.http_async_client._trust_env)
+                self.assertEqual(client.openai_proxy, "")
 
 
 if __name__ == "__main__":

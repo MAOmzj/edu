@@ -1,4 +1,4 @@
-# 文件用途：声明运行后端、Agent、RAG、SQLite、Chroma、Qdrant、Tavily和Web服务所需的Python依赖范围。
+# 文件用途：声明运行后端、Agent、RAG、SQLite、Chroma、Qdrant、本机vLLM、Tavily和Web服务所需的Python依赖范围。
 # 调用关系：pip install -r requirements.txt 读取本文件；Python代码随后导入这些第三方包。
 # 修改易踩坑：大版本升级可能破坏LangChain/LangGraph接口，Chroma在Windows上的原生兼容性要单独验证。
 python-dotenv>=1.2,<2
@@ -8,6 +8,8 @@ langchain-core>=1.5,<2
 langchain-community>=0.4,<0.5
 langchain-chroma>=1.1,<2
 langchain-deepseek>=1.1,<2
+# 默认聊天与 Embedding 都走本机 vllm serve 的 OpenAI 兼容接口，因此这是必需依赖。
+langchain-openai>=1.0,<2
 langchain-tavily>=0.2,<1
 langchain-text-splitters>=1.1,<2
 langgraph>=1.2,<2

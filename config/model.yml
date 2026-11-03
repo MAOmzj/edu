@@ -1,12 +1,70 @@
-# 文件用途：配置 DeepSeek 聊天模型、百炼/本地 Embedding、超时、重试和生成参数。
+# 文件用途：配置聊天、独立摘要模型与 Embedding 的供应商、地址、超时、重试和生成参数。
 # 调用关系：config_handler.py 加载本文件；model/factory.py 用它创建模型客户端。
-# 修改易踩坑：模型名称必须是供应商真实支持的值，Embedding更换后必须重建索引，密钥不写在这里。
-chat_model_name: deepseek-v4-flash
-embedding_model_name: text-embedding-v4
+# 修改易踩坑：模型名称须与 vLLM 服务名或 LoRA 的 name 一致；更换 Embedding 后必须重建索引；密钥不写在这里。
+
+# 聊天模型供应商：local_vllm（本机 vLLM 的 OpenAI 兼容接口）或 deepseek（官方 API）。
+# 也可用环境变量 EDUCATION_CHAT_PROVIDER 临时覆盖，不修改本文件。
+chat_provider: local_vllm
+# 使用者：factory.create_chat_model 将此名称放进 HTTP 请求，vLLM 据此选择教育适配器。
+chat_model_name: qwen3.8-27b-education-v2
+chat_base_url: http://127.0.0.1:8000/v1
+# 使用者：serve._chat_model_options → vLLM；从原始基座动态NF4量化，再加载正式v2 LoRA。
+chat_model_path: /root/MAOMI/models/Qwen3.8-27B
+# 使用者：serve._chat_quantization_options → vllm-bnb-plugin，以训练时相同的NF4格式加载。
+# nf4为4bit NormalFloat，不是AWQ整数INT4；设为bf16可切回原始精度推理。
+chat_quantization: nf4
+# 使用者：serve._build_services → --gpu-memory-utilization；包含权重、缓存及运行开销。
+# TP 时该比例按每张 GPU 计算；QWEN_GPU_MEM_UTIL 环境变量优先。
+chat_gpu_memory_utilization: 0.90
+# 使用者：serve._build_services → vLLM，将同一个聊天模型分到两张 GPU 上。
+chat_tensor_parallel_size: 2
+# 使用者：serve._vllm_service_env → 子进程环境；只控制聊天服务的可见 GPU。
+chat_cuda_visible_devices: '0,1'
+# 使用者：serve._chat_model_options 读取适配器配置，--lora-modules 由 vLLM 加载权重。
+# 此目录是最终适配器，不是 optimizer.pt；不需要合并或复制 27B 权重。
+# 设为空字符串时停用适配器；客户端名称必须随部署模型保持一致。
+chat_lora_path: /root/MAOMI/training/education-lora-v2/adapter
+
+# Embedding 供应商：local_vllm、dashscope 或 local-hashing-zh-v1。
+embedding_provider: local_vllm
+# 必须与 start_embedding.sh 的 --served-model-name 完全一致；更换后所有旧索引失效。
+embedding_model_name: qwen3-embedding
+embedding_base_url: http://127.0.0.1:8001/v1
+# 使用者：serve._vllm_service_env → 向量服务环境；保持单卡，不随聊天 TP 分片。
+embedding_cuda_visible_devices: '0'
+# Qwen3-Embedding-0.6B 输出 1024 维，必须与 knowledge.yml 的 qdrant_server.vector_size 一致。
+# 官方建议查询侧加任务指令、文档侧不加；置空字符串可关闭。
+embedding_query_instruction: "Instruct: 检索能回答小学生学习问题的中文知识资料\nQuery: "
+# 仅 local-hashing-zh-v1 这个离线降级方案使用。
 local_embedding_dimension: 1024
+
 embedding_max_retries: 3
 temperature: 0.1
-# 小学问答以快速、稳定为主。开启思考模式会增加延迟和输出费用。
+# 小学问答以快速、稳定为主。开启思考模式会增加延迟，并且多轮工具调用要求回传
+# reasoning_content。本机 Qwen 用 chat_template_kwargs.enable_thinking 控制，
+# DeepSeek 用 extra_body.thinking 控制，语义一致。
 thinking_enabled: false
-request_timeout: 60
+# 本机27B处理长上下文和审核重写时可能耗时较长，因此请求超时为180秒。
+request_timeout: 180
 max_retries: 2
+
+# 使用者：serve._vllm_service_env → 摘要服务环境；保持单卡，不随聊天 TP 分片。
+summary_cuda_visible_devices: '0'
+# 独立摘要小模型。当前使用合并后的 v2 完整模型，跟随 serve.py all 启动。
+# EDUCATION_SUMMARY_ENABLED 可覆盖 enabled；URL 和服务模型名也支持独立环境变量。
+summary:
+  enabled: true
+  provider: local_vllm
+  # 必须与摘要 vLLM 服务的 --served-model-name 一致。
+  # 可用 EDUCATION_SUMMARY_MODEL_NAME / EDUCATION_SUMMARY_BASE_URL 覆盖这两项。
+  model_name: education-summary
+  base_url: http://127.0.0.1:8002/v1
+  # 启动脚本读取本地权重目录；配置不会自动下载或启动模型。
+  model_path: /root/MAOMI/models/Qwen3-4B-summary-lora-v2
+  # 遵循 Qwen3 非思考模式的 temperature=0.7 建议，摘要质量由独立评测确认。
+  temperature: 0.7
+  enable_thinking: false
+  request_timeout: 60
+  # 摘要请求失败时由上下文管理器回退，避免自动重试拖慢本轮对话。
+  max_retries: 0
+  max_tokens: 2048
